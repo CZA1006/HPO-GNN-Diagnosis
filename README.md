@@ -67,8 +67,11 @@ Fine-tune BioBERT on HPO term definitions.
 ```bash
 python src/hpo_tsdae.py \
   --hpo_obo hp.obo \
+  --model_name dmis-lab/biobert-v1.1 \
+  --batch_size 16 \
+  --lr 5e-5 \
   --epochs 5 \
-  --batch_size 16  
+  --device cpu 
 ```  
 **Output:**
 - `checkpoints/hpo_tsdae_encoder/` containing the fine-tuned BERT model.
