@@ -1,0 +1,16 @@
+{
+  "disease": { "id": "Developmental and epileptic encephalopathy 96" },
+  "phenotypicFeatures": [
+    { "type": { "id": "HP:0000006" } },
+    { "type": { "id": "HP:0001518" } },
+    { "type": { "id": "HP:0001522" } },
+    { "type": { "id": "HP:0001789" } },
+    { "type": { "id": "HP:0002187" } },
+    { "type": { "id": "HP:0002643" } },
+    { "type": { "id": "HP:0010851" } },
+    { "type": { "id": "HP:0011097" } },
+    { "type": { "id": "HP:0011451" } },
+    { "type": { "id": "HP:0032792" } },
+    { "type": { "id": "HP:0200134" } }
+  ]
+}

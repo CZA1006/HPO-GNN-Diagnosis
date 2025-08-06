@@ -9,7 +9,7 @@ class HPOTSDAEDataset(Dataset):
         self.terms = []  # list of (term_id, text)
         self.tokenizer = tokenizer
         self.max_length = max_length
-        
+
         # Parse HPO .obo file
         with open(obo_file) as f:
             lines = f.read().split("\n")
@@ -23,16 +23,22 @@ class HPOTSDAEDataset(Dataset):
                     self.terms.append((cur['id'], text))
                 cur = {}
             else:
-                if line.startswith('id: '): cur['id'] = line.split('id: ')[1]
+                if line.startswith('id: '):      cur['id']   = line.split('id: ')[1]
                 elif line.startswith('name: '): cur['name'] = line.split('name: ')[1]
-                elif line.startswith('def: '): cur['def'] = line.split('def: ')[1].strip('"')
+                elif line.startswith('def: '):  cur['def']  = line.split('def: ')[1].strip('"')
 
     def __len__(self):
         return len(self.terms)
 
     def __getitem__(self, idx):
         term_id, text = self.terms[idx]
-        inputs = self.tokenizer(text, truncation=True, padding='max_length', max_length=self.max_length, return_tensors='pt')
+        inputs = self.tokenizer(
+            text,
+            truncation=True,
+            padding='max_length',
+            max_length=self.max_length,
+            return_tensors='pt'
+        )
         return term_id, inputs.input_ids.squeeze(0), inputs.attention_mask.squeeze(0)
 
 class TSDAEModel(torch.nn.Module):
@@ -54,7 +60,6 @@ class TSDAEModel(torch.nn.Module):
         outputs = self.encoder(noisy, attention_mask=attention_mask, labels=input_ids)
         return outputs.loss
 
-
 def train_tsdae(
     obo_path,
     model_name='dmis-lab/biobert-v1.1',
@@ -63,10 +68,12 @@ def train_tsdae(
     epochs=3,
     device=None
 ):
+    # Device selection
     if device is None:
         device = 'cuda' if torch.cuda.is_available() else 'cpu'
     print(f"Training on device: {device}")
 
+    # Initialize tokenizer and dataset
     tokenizer = AutoTokenizer.from_pretrained(
         model_name,
         use_safetensors=True,
@@ -75,6 +82,7 @@ def train_tsdae(
     dataset = HPOTSDAEDataset(obo_path, tokenizer)
     loader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
 
+    # Build model and optimizer
     model = TSDAEModel(
         model_name,
         mask_token_id=tokenizer.mask_token_id,
@@ -82,6 +90,7 @@ def train_tsdae(
     ).to(device)
     optimizer = AdamW(model.parameters(), lr=lr)
 
+    # Training loop
     model.train()
     for epoch in range(epochs):
         total_loss = 0.0
@@ -96,13 +105,46 @@ def train_tsdae(
         avg = total_loss / len(loader)
         print(f"Epoch {epoch+1}/{epochs} - Loss: {avg:.4f}")
 
+    # Save the fine-tuned encoder
     os.makedirs('checkpoints', exist_ok=True)
     model.encoder.save_pretrained('checkpoints/hpo_tsdae_encoder')
 
 if __name__ == '__main__':
     import argparse
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--hpo_obo', default='hp.obo', type=str)
-    parser.add_argument('--epochs', type=int, default=3)
+    parser = argparse.ArgumentParser(
+        description="Train TSDAE on HPO term definitions"
+    )
+    parser.add_argument(
+        '--hpo_obo', default='hp.obo', type=str,
+        help='Path to HPO .obo file'
+    )
+    parser.add_argument(
+        '--model_name', default='dmis-lab/biobert-v1.1', type=str,
+        help='Transformers model name or path'
+    )
+    parser.add_argument(
+        '--batch_size', default=16, type=int,
+        help='Batch size for training'
+    )
+    parser.add_argument(
+        '--lr', default=5e-5, type=float,
+        help='Learning rate'
+    )
+    parser.add_argument(
+        '--epochs', default=3, type=int,
+        help='Number of epochs'
+    )
+    parser.add_argument(
+        '--device', default=None, type=str,
+        help='Device (cpu or cuda); auto-detect if unspecified'
+    )
     args = parser.parse_args()
-    train_tsdae(args.hpo_obo, epochs=args.epochs)
+
+    train_tsdae(
+        args.hpo_obo,
+        model_name=args.model_name,
+        batch_size=args.batch_size,
+        lr=args.lr,
+        epochs=args.epochs,
+        device=args.device
+    )
