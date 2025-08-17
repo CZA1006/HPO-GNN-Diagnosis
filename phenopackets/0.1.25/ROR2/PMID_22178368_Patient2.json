@@ -1,0 +1,266 @@
+{
+  "id": "PMID_22178368_Patient_2",
+  "subject": {
+    "id": "Patient 2",
+    "timeAtLastEncounter": {
+      "age": {
+        "iso8601duration": "P15Y"
+      }
+    },
+    "vitalStatus": {
+      "status": "ALIVE"
+    },
+    "sex": "FEMALE"
+  },
+  "phenotypicFeatures": [
+    {
+      "type": {
+        "id": "HP:0000954",
+        "label": "Single transverse palmar crease"
+      },
+      "onset": {
+        "ontologyClass": {
+          "id": "HP:0003577",
+          "label": "Congenital onset"
+        }
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0003027",
+        "label": "Mesomelia"
+      },
+      "onset": {
+        "ontologyClass": {
+          "id": "HP:0003577",
+          "label": "Congenital onset"
+        }
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0005280",
+        "label": "Depressed nasal bridge"
+      },
+      "onset": {
+        "ontologyClass": {
+          "id": "HP:0003577",
+          "label": "Congenital onset"
+        }
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0000316",
+        "label": "Hypertelorism"
+      },
+      "onset": {
+        "ontologyClass": {
+          "id": "HP:0003577",
+          "label": "Congenital onset"
+        }
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0000369",
+        "label": "Low-set ears"
+      },
+      "onset": {
+        "ontologyClass": {
+          "id": "HP:0003577",
+          "label": "Congenital onset"
+        }
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0001156",
+        "label": "Brachydactyly"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0030084",
+        "label": "Clinodactyly"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0006159",
+        "label": "Mesoaxial hand polydactyly"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0010034",
+        "label": "Short 1st metacarpal"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0000582",
+        "label": "Upslanted palpebral fissure"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0000520",
+        "label": "Proptosis"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0004322",
+        "label": "Short stature"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0006394",
+        "label": "Limited pronation/supination of forearm"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0004482",
+        "label": "Relative macrocephaly"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0034281",
+        "label": "Phalangeal cone-shaped epiphyses"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0000678",
+        "label": "Dental crowding"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0000400",
+        "label": "Macrotia"
+      }
+    }
+  ],
+  "interpretations": [
+    {
+      "id": "Patient 2",
+      "progressStatus": "SOLVED",
+      "diagnosis": {
+        "disease": {
+          "id": "OMIM:268310",
+          "label": "Robinow syndrome, autosomal recessive"
+        },
+        "genomicInterpretations": [
+          {
+            "subjectOrBiosampleId": "Patient 2",
+            "interpretationStatus": "CAUSATIVE",
+            "variantInterpretation": {
+              "variationDescriptor": {
+                "id": "var_FNqCaoAngsqqRzgwuCmkGtzJZ",
+                "geneContext": {
+                  "valueId": "HGNC:10257",
+                  "symbol": "ROR2"
+                },
+                "expressions": [
+                  {
+                    "syntax": "hgvs.c",
+                    "value": "NM_004560.4:c.814C>T"
+                  },
+                  {
+                    "syntax": "hgvs.g",
+                    "value": "NC_000009.12:g.91733245G>A"
+                  }
+                ],
+                "vcfRecord": {
+                  "genomeAssembly": "hg38",
+                  "chrom": "chr9",
+                  "pos": "91733245",
+                  "ref": "G",
+                  "alt": "A"
+                },
+                "moleculeContext": "genomic",
+                "allelicState": {
+                  "id": "GENO:0000136",
+                  "label": "homozygous"
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "diseases": [
+    {
+      "term": {
+        "id": "OMIM:268310",
+        "label": "Robinow syndrome, autosomal recessive"
+      },
+      "onset": {
+        "ontologyClass": {
+          "id": "HP:0003577",
+          "label": "Congenital onset"
+        }
+      }
+    }
+  ],
+  "metaData": {
+    "created": "2024-11-03T18:37:28.250640869Z",
+    "createdBy": "ORCID:0000-0002-0736-9199",
+    "resources": [
+      {
+        "id": "geno",
+        "name": "Genotype Ontology",
+        "url": "http://purl.obolibrary.org/obo/geno.owl",
+        "version": "2022-03-05",
+        "namespacePrefix": "GENO",
+        "iriPrefix": "http://purl.obolibrary.org/obo/GENO_"
+      },
+      {
+        "id": "hgnc",
+        "name": "HUGO Gene Nomenclature Committee",
+        "url": "https://www.genenames.org",
+        "version": "06/01/23",
+        "namespacePrefix": "HGNC",
+        "iriPrefix": "https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/"
+      },
+      {
+        "id": "omim",
+        "name": "An Online Catalog of Human Genes and Genetic Disorders",
+        "url": "https://www.omim.org",
+        "version": "January 4, 2023",
+        "namespacePrefix": "OMIM",
+        "iriPrefix": "https://www.omim.org/entry/"
+      },
+      {
+        "id": "so",
+        "name": "Sequence types and features ontology",
+        "url": "http://purl.obolibrary.org/obo/so.obo",
+        "version": "2021-11-22",
+        "namespacePrefix": "SO",
+        "iriPrefix": "http://purl.obolibrary.org/obo/SO_"
+      },
+      {
+        "id": "hp",
+        "name": "human phenotype ontology",
+        "url": "http://purl.obolibrary.org/obo/hp.owl",
+        "version": "2024-08-13",
+        "namespacePrefix": "HP",
+        "iriPrefix": "http://purl.obolibrary.org/obo/HP_"
+      }
+    ],
+    "phenopacketSchemaVersion": "2.0",
+    "externalReferences": [
+      {
+        "id": "PMID:22178368",
+        "reference": "https://pubmed.ncbi.nlm.nih.gov/22178368",
+        "description": "Identification of a novel causative mutation in the ROR2 gene in a Lebanese family with a mild form of recessive Robinow syndrome"
+      }
+    ]
+  }
+}

@@ -1,0 +1,371 @@
+{
+  "id": "PMID_21567932_Patient",
+  "subject": {
+    "id": "Patient",
+    "timeAtLastEncounter": {
+      "age": {
+        "iso8601duration": "P1Y8M"
+      }
+    },
+    "vitalStatus": {
+      "status": "ALIVE"
+    },
+    "sex": "FEMALE"
+  },
+  "phenotypicFeatures": [
+    {
+      "type": {
+        "id": "HP:0005280",
+        "label": "Depressed nasal bridge"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0000219",
+        "label": "Thin upper lip vermilion"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0000396",
+        "label": "Overfolded helix"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0001083",
+        "label": "Ectopia lentis"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0000322",
+        "label": "Short philtrum"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0100775",
+        "label": "Dural ectasia"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0200128",
+        "label": "Biventricular hypertrophy"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0002119",
+        "label": "Ventriculomegaly"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0000252",
+        "label": "Microcephaly"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0002365",
+        "label": "Hypoplasia of the brainstem"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0004933",
+        "label": "Ascending aortic dissection"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0011645",
+        "label": "Dilatation of the sinus of Valsalva"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0001643",
+        "label": "Patent ductus arteriosus"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0002616",
+        "label": "Aortic root aneurysm"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0001680",
+        "label": "Coarctation of aorta"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0030745",
+        "label": "Dilatation of the ductus arteriosus"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0031252",
+        "label": "Dilated left subclavian artery"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0001631",
+        "label": "Atrial septal defect"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0005182",
+        "label": "Bicuspid pulmonary valve"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0001647",
+        "label": "Bicuspid aortic valve"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0001659",
+        "label": "Aortic regurgitation"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0005116",
+        "label": "Arterial tortuosity"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0000175",
+        "label": "Cleft palate"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0000218",
+        "label": "High palate"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0000193",
+        "label": "Bifid uvula"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0000767",
+        "label": "Pectus excavatum"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0000768",
+        "label": "Pectus carinatum"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0001166",
+        "label": "Arachnodactyly"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0000490",
+        "label": "Deeply set eye"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0000520",
+        "label": "Proptosis"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0000577",
+        "label": "Exotropia"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0000286",
+        "label": "Epicanthus"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0000316",
+        "label": "Hypertelorism"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0000494",
+        "label": "Downslanted palpebral fissures"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0002007",
+        "label": "Frontal bossing"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0000319",
+        "label": "Smooth philtrum"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0000238",
+        "label": "Hydrocephalus"
+      },
+      "excluded": true
+    }
+  ],
+  "interpretations": [
+    {
+      "id": "Patient",
+      "progressStatus": "SOLVED",
+      "diagnosis": {
+        "disease": {
+          "id": "OMIM:610168",
+          "label": "Loeys-Dietz syndrome 2"
+        },
+        "genomicInterpretations": [
+          {
+            "subjectOrBiosampleId": "Patient",
+            "interpretationStatus": "CAUSATIVE",
+            "variantInterpretation": {
+              "variationDescriptor": {
+                "id": "var_ZXSqONILufyVeFpSLVUbsylGP",
+                "label": "896 kb deletion including the entire TGFBR2 gene",
+                "geneContext": {
+                  "valueId": "HGNC:11773",
+                  "symbol": "TGFBR2"
+                },
+                "moleculeContext": "genomic",
+                "structuralType": {
+                  "id": "SO:1000029",
+                  "label": "chromosomal_deletion"
+                },
+                "allelicState": {
+                  "id": "GENO:0000135",
+                  "label": "heterozygous"
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "diseases": [
+    {
+      "term": {
+        "id": "OMIM:610168",
+        "label": "Loeys-Dietz syndrome 2"
+      },
+      "onset": {
+        "ontologyClass": {
+          "id": "HP:0003593",
+          "label": "Infantile onset"
+        }
+      }
+    }
+  ],
+  "metaData": {
+    "created": "2024-12-07T12:58:10.764671087Z",
+    "createdBy": "ORCID:0000-0002-0736-9199",
+    "resources": [
+      {
+        "id": "geno",
+        "name": "Genotype Ontology",
+        "url": "http://purl.obolibrary.org/obo/geno.owl",
+        "version": "2022-03-05",
+        "namespacePrefix": "GENO",
+        "iriPrefix": "http://purl.obolibrary.org/obo/GENO_"
+      },
+      {
+        "id": "hgnc",
+        "name": "HUGO Gene Nomenclature Committee",
+        "url": "https://www.genenames.org",
+        "version": "06/01/23",
+        "namespacePrefix": "HGNC",
+        "iriPrefix": "https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/"
+      },
+      {
+        "id": "omim",
+        "name": "An Online Catalog of Human Genes and Genetic Disorders",
+        "url": "https://www.omim.org",
+        "version": "January 4, 2023",
+        "namespacePrefix": "OMIM",
+        "iriPrefix": "https://www.omim.org/entry/"
+      },
+      {
+        "id": "so",
+        "name": "Sequence types and features ontology",
+        "url": "http://purl.obolibrary.org/obo/so.obo",
+        "version": "2021-11-22",
+        "namespacePrefix": "SO",
+        "iriPrefix": "http://purl.obolibrary.org/obo/SO_"
+      },
+      {
+        "id": "hp",
+        "name": "human phenotype ontology",
+        "url": "http://purl.obolibrary.org/obo/hp.owl",
+        "version": "2024-08-13",
+        "namespacePrefix": "HP",
+        "iriPrefix": "http://purl.obolibrary.org/obo/HP_"
+      }
+    ],
+    "phenopacketSchemaVersion": "2.0",
+    "externalReferences": [
+      {
+        "id": "PMID:21567932",
+        "reference": "https://pubmed.ncbi.nlm.nih.gov/21567932",
+        "description": "TGFBR2 deletion in a 20-month-old female with developmental delay and microcephaly"
+      }
+    ]
+  }
+}

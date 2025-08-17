@@ -1,0 +1,325 @@
+{
+  "id": "PMID_39135939_patient",
+  "subject": {
+    "id": "patient",
+    "timeAtLastEncounter": {
+      "age": {
+        "iso8601duration": "P12Y"
+      }
+    },
+    "vitalStatus": {
+      "status": "ALIVE"
+    },
+    "sex": "FEMALE"
+  },
+  "phenotypicFeatures": [
+    {
+      "type": {
+        "id": "HP:0012626",
+        "label": "Stage 4 chronic kidney disease"
+      },
+      "onset": {
+        "age": {
+          "iso8601duration": "P1Y2M"
+        }
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0004319",
+        "label": "Decreased circulating aldosterone concentration"
+      },
+      "onset": {
+        "age": {
+          "iso8601duration": "P1Y2M"
+        }
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0002153",
+        "label": "Hyperkalemia"
+      },
+      "onset": {
+        "age": {
+          "iso8601duration": "P1Y2M"
+        }
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0002149",
+        "label": "Hyperuricemia"
+      },
+      "onset": {
+        "age": {
+          "iso8601duration": "P7Y"
+        }
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0004737",
+        "label": "Global glomerulosclerosis"
+      },
+      "onset": {
+        "age": {
+          "iso8601duration": "P9Y"
+        }
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0005576",
+        "label": "Tubulointerstitial fibrosis"
+      },
+      "onset": {
+        "age": {
+          "iso8601duration": "P9Y"
+        }
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0031266",
+        "label": "Podocyte foot process effacement"
+      },
+      "onset": {
+        "age": {
+          "iso8601duration": "P9Y"
+        }
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0004722",
+        "label": "Thickened glomerular basement membrane"
+      },
+      "onset": {
+        "age": {
+          "iso8601duration": "P9Y"
+        }
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0001508",
+        "label": "Failure to thrive"
+      },
+      "onset": {
+        "age": {
+          "iso8601duration": "P3M"
+        }
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0004322",
+        "label": "Short stature"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0001518",
+        "label": "Small for gestational age"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0003259",
+        "label": "Elevated circulating creatinine concentration"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0012606",
+        "label": "Renal sodium wasting"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0001875",
+        "label": "Neutropenia"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0011342",
+        "label": "Mild global developmental delay"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0003774",
+        "label": "Stage 5 chronic kidney disease"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0002719",
+        "label": "Recurrent infections"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0001997",
+        "label": "Gout"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0040084",
+        "label": "Abnormal circulating renin concentration"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0000093",
+        "label": "Proteinuria"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0004315",
+        "label": "Decreased circulating IgG concentration"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0002850",
+        "label": "Decreased circulating total IgM"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0002720",
+        "label": "Decreased circulating IgA concentration"
+      },
+      "excluded": true
+    }
+  ],
+  "interpretations": [
+    {
+      "id": "patient",
+      "progressStatus": "SOLVED",
+      "diagnosis": {
+        "disease": {
+          "id": "OMIM:617056",
+          "label": "Tubulointerstitial kidney disease, autosomal dominant, 5"
+        },
+        "genomicInterpretations": [
+          {
+            "subjectOrBiosampleId": "patient",
+            "interpretationStatus": "CAUSATIVE",
+            "variantInterpretation": {
+              "variationDescriptor": {
+                "id": "var_VpeylqYOgjysBAiGjOnFScDrI",
+                "geneContext": {
+                  "valueId": "HGNC:18276",
+                  "symbol": "SEC61A1"
+                },
+                "expressions": [
+                  {
+                    "syntax": "hgvs.c",
+                    "value": "NM_013336.4:c.1372T>G"
+                  },
+                  {
+                    "syntax": "hgvs.g",
+                    "value": "NC_000003.12:g.128069603T>G"
+                  }
+                ],
+                "vcfRecord": {
+                  "genomeAssembly": "hg38",
+                  "chrom": "chr3",
+                  "pos": "128069603",
+                  "ref": "T",
+                  "alt": "G"
+                },
+                "moleculeContext": "genomic",
+                "allelicState": {
+                  "id": "GENO:0000135",
+                  "label": "heterozygous"
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "diseases": [
+    {
+      "term": {
+        "id": "OMIM:617056",
+        "label": "Tubulointerstitial kidney disease, autosomal dominant, 5"
+      },
+      "onset": {
+        "age": {
+          "iso8601duration": "P3M"
+        }
+      }
+    }
+  ],
+  "metaData": {
+    "created": "2024-10-01T10:12:07.053964138Z",
+    "createdBy": "ORCID:0000-0002-0736-9199",
+    "resources": [
+      {
+        "id": "geno",
+        "name": "Genotype Ontology",
+        "url": "http://purl.obolibrary.org/obo/geno.owl",
+        "version": "2022-03-05",
+        "namespacePrefix": "GENO",
+        "iriPrefix": "http://purl.obolibrary.org/obo/GENO_"
+      },
+      {
+        "id": "hgnc",
+        "name": "HUGO Gene Nomenclature Committee",
+        "url": "https://www.genenames.org",
+        "version": "06/01/23",
+        "namespacePrefix": "HGNC",
+        "iriPrefix": "https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/"
+      },
+      {
+        "id": "omim",
+        "name": "An Online Catalog of Human Genes and Genetic Disorders",
+        "url": "https://www.omim.org",
+        "version": "January 4, 2023",
+        "namespacePrefix": "OMIM",
+        "iriPrefix": "https://www.omim.org/entry/"
+      },
+      {
+        "id": "so",
+        "name": "Sequence types and features ontology",
+        "url": "http://purl.obolibrary.org/obo/so.obo",
+        "version": "2021-11-22",
+        "namespacePrefix": "SO",
+        "iriPrefix": "http://purl.obolibrary.org/obo/SO_"
+      },
+      {
+        "id": "hp",
+        "name": "human phenotype ontology",
+        "url": "http://purl.obolibrary.org/obo/hp.owl",
+        "version": "2024-08-13",
+        "namespacePrefix": "HP",
+        "iriPrefix": "http://purl.obolibrary.org/obo/HP_"
+      }
+    ],
+    "phenopacketSchemaVersion": "2.0",
+    "externalReferences": [
+      {
+        "id": "PMID:39135939",
+        "reference": "https://pubmed.ncbi.nlm.nih.gov/39135939",
+        "description": "Hypoaldosteronism due to a novel SEC61A1 variant successfully treated with fludrocortisone"
+      }
+    ]
+  }
+}

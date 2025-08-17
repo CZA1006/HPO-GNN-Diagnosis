@@ -1,0 +1,293 @@
+{
+  "id": "PMID_15952209_Patient_2",
+  "subject": {
+    "id": "Patient 2",
+    "timeAtLastEncounter": {
+      "age": {
+        "iso8601duration": "P40Y"
+      }
+    },
+    "vitalStatus": {
+      "status": "ALIVE"
+    },
+    "sex": "MALE"
+  },
+  "phenotypicFeatures": [
+    {
+      "type": {
+        "id": "HP:0001792",
+        "label": "Small nail"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0001156",
+        "label": "Brachydactyly"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0003027",
+        "label": "Mesomelia"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0009232",
+        "label": "Symphalangism affecting the proximal phalanx of the 5th finger"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0003083",
+        "label": "Dislocated radial head"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0002937",
+        "label": "Hemivertebrae"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0002650",
+        "label": "Scoliosis"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0000902",
+        "label": "Rib fusion"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0000431",
+        "label": "Wide nasal bridge"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0000154",
+        "label": "Wide mouth"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0011220",
+        "label": "Prominent forehead"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0003196",
+        "label": "Short nose"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0000316",
+        "label": "Hypertelorism"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0000054",
+        "label": "Micropenis"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0004322",
+        "label": "Short stature"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0006394",
+        "label": "Limited pronation/supination of forearm"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0011304",
+        "label": "Broad thumb"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0000207",
+        "label": "Triangular mouth"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0000028",
+        "label": "Cryptorchidism"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0001382",
+        "label": "Joint hypermobility"
+      },
+      "excluded": true
+    }
+  ],
+  "interpretations": [
+    {
+      "id": "Patient 2",
+      "progressStatus": "SOLVED",
+      "diagnosis": {
+        "disease": {
+          "id": "OMIM:268310",
+          "label": "Robinow syndrome, autosomal recessive"
+        },
+        "genomicInterpretations": [
+          {
+            "subjectOrBiosampleId": "Patient 2",
+            "interpretationStatus": "CAUSATIVE",
+            "variantInterpretation": {
+              "variationDescriptor": {
+                "id": "var_ALAxGvuUVCeupNKLjFCtkORIL",
+                "geneContext": {
+                  "valueId": "HGNC:10257",
+                  "symbol": "ROR2"
+                },
+                "expressions": [
+                  {
+                    "syntax": "hgvs.c",
+                    "value": "NM_004560.4:c.355C>T"
+                  },
+                  {
+                    "syntax": "hgvs.g",
+                    "value": "NC_000009.12:g.91757380G>A"
+                  }
+                ],
+                "vcfRecord": {
+                  "genomeAssembly": "hg38",
+                  "chrom": "chr9",
+                  "pos": "91757380",
+                  "ref": "G",
+                  "alt": "A"
+                },
+                "moleculeContext": "genomic",
+                "allelicState": {
+                  "id": "GENO:0000135",
+                  "label": "heterozygous"
+                }
+              }
+            }
+          },
+          {
+            "subjectOrBiosampleId": "Patient 2",
+            "interpretationStatus": "CAUSATIVE",
+            "variantInterpretation": {
+              "variationDescriptor": {
+                "id": "var_upAtBQtQRCyRhvBRXuXkoPFYK",
+                "geneContext": {
+                  "valueId": "HGNC:10257",
+                  "symbol": "ROR2"
+                },
+                "expressions": [
+                  {
+                    "syntax": "hgvs.c",
+                    "value": "NM_004560.4:c.550C>T"
+                  },
+                  {
+                    "syntax": "hgvs.g",
+                    "value": "NC_000009.12:g.91737463G>A"
+                  }
+                ],
+                "vcfRecord": {
+                  "genomeAssembly": "hg38",
+                  "chrom": "chr9",
+                  "pos": "91737463",
+                  "ref": "G",
+                  "alt": "A"
+                },
+                "moleculeContext": "genomic",
+                "allelicState": {
+                  "id": "GENO:0000135",
+                  "label": "heterozygous"
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "diseases": [
+    {
+      "term": {
+        "id": "OMIM:268310",
+        "label": "Robinow syndrome, autosomal recessive"
+      },
+      "onset": {
+        "ontologyClass": {
+          "id": "HP:0003577",
+          "label": "Congenital onset"
+        }
+      }
+    }
+  ],
+  "metaData": {
+    "created": "2024-11-03T18:37:28.252869129Z",
+    "createdBy": "ORCID:0000-0002-0736-9199",
+    "resources": [
+      {
+        "id": "geno",
+        "name": "Genotype Ontology",
+        "url": "http://purl.obolibrary.org/obo/geno.owl",
+        "version": "2022-03-05",
+        "namespacePrefix": "GENO",
+        "iriPrefix": "http://purl.obolibrary.org/obo/GENO_"
+      },
+      {
+        "id": "hgnc",
+        "name": "HUGO Gene Nomenclature Committee",
+        "url": "https://www.genenames.org",
+        "version": "06/01/23",
+        "namespacePrefix": "HGNC",
+        "iriPrefix": "https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/"
+      },
+      {
+        "id": "omim",
+        "name": "An Online Catalog of Human Genes and Genetic Disorders",
+        "url": "https://www.omim.org",
+        "version": "January 4, 2023",
+        "namespacePrefix": "OMIM",
+        "iriPrefix": "https://www.omim.org/entry/"
+      },
+      {
+        "id": "so",
+        "name": "Sequence types and features ontology",
+        "url": "http://purl.obolibrary.org/obo/so.obo",
+        "version": "2021-11-22",
+        "namespacePrefix": "SO",
+        "iriPrefix": "http://purl.obolibrary.org/obo/SO_"
+      },
+      {
+        "id": "hp",
+        "name": "human phenotype ontology",
+        "url": "http://purl.obolibrary.org/obo/hp.owl",
+        "version": "2024-08-13",
+        "namespacePrefix": "HP",
+        "iriPrefix": "http://purl.obolibrary.org/obo/HP_"
+      }
+    ],
+    "phenopacketSchemaVersion": "2.0",
+    "externalReferences": [
+      {
+        "id": "PMID:15952209",
+        "reference": "https://pubmed.ncbi.nlm.nih.gov/15952209",
+        "description": "Clinical and molecular characterization of two adults with autosomal recessive Robinow syndrome"
+      }
+    ]
+  }
+}

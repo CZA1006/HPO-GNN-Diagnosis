@@ -30,6 +30,7 @@ def parse_hpo_terms_and_graph(obo_path, namespace_filter=None):
 
     # build undirected edge_index
     edges = []
+    # 把本来无向的 HPO 术语关系，手动拆成双向有向边，以满足 PyG 的输入规范并实现无向图上的双向信息流
     for u, v in G.to_undirected().edges():
         i, j = node2idx[u], node2idx[v]
         edges.append((i, j))
@@ -42,7 +43,7 @@ def parse_hpo_terms_and_graph(obo_path, namespace_filter=None):
 def load_tsdae_embeddings(checkpoint_dir, terms, model_name, device="cpu"):
     # tokenizer from original model to get vocab
     tokenizer = AutoTokenizer.from_pretrained(model_name)
-    # model weights from your TSDAE checkpoint
+    # model weights from TSDAE checkpoint
     model = AutoModel.from_pretrained(checkpoint_dir).to(device)
     model.eval()
 
@@ -88,11 +89,13 @@ class GINEncoder(torch.nn.Module):
         )
         self.conv2 = GINConv(nn2)
 
+    # 两层 GINConv，每层：Linear → BatchNorm → ReLU → Linear
     def forward(self, x, edge_index):
         x = self.conv1(x, edge_index)
         x = self.conv2(x, edge_index)
         return x
 
+# 生成两组“扰动视图”（views），用于对比学习
 def augment(x, edge_index, drop_edge_prob=0.2, mask_feat_prob=0.1):
     mask = torch.rand(edge_index.size(1)) >= drop_edge_prob
     edge_index_aug = edge_index[:, mask]

@@ -1,0 +1,346 @@
+{
+  "id": "PMID_27392076_2_III_1",
+  "subject": {
+    "id": "2-III:1",
+    "timeAtLastEncounter": {
+      "age": {
+        "iso8601duration": "P27Y"
+      }
+    },
+    "vitalStatus": {
+      "status": "ALIVE"
+    },
+    "sex": "FEMALE"
+  },
+  "phenotypicFeatures": [
+    {
+      "type": {
+        "id": "HP:0001875",
+        "label": "Neutropenia"
+      },
+      "onset": {
+        "age": {
+          "iso8601duration": "P14D"
+        }
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0100838",
+        "label": "Recurrent cutaneous abscess formation"
+      },
+      "onset": {
+        "age": {
+          "iso8601duration": "P14D"
+        }
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0001518",
+        "label": "Small for gestational age"
+      },
+      "onset": {
+        "ontologyClass": {
+          "id": "HP:0003577",
+          "label": "Congenital onset"
+        }
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0001997",
+        "label": "Gout"
+      },
+      "onset": {
+        "age": {
+          "iso8601duration": "P18Y"
+        }
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0004719",
+        "label": "Hyperechogenic kidneys"
+      },
+      "onset": {
+        "age": {
+          "iso8601duration": "P18Y"
+        }
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0002153",
+        "label": "Hyperkalemia"
+      },
+      "onset": {
+        "age": {
+          "iso8601duration": "P28Y"
+        }
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0012622",
+        "label": "Chronic kidney disease"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0003259",
+        "label": "Elevated circulating creatinine concentration"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0002149",
+        "label": "Hyperuricemia"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0003138",
+        "label": "Increased blood urea nitrogen"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0012213",
+        "label": "Decreased glomerular filtration rate"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0001882",
+        "label": "Leukopenia"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0001903",
+        "label": "Anemia"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0034886",
+        "label": "Decreased urinary uromodulin level"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0011342",
+        "label": "Mild global developmental delay"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0003774",
+        "label": "Stage 5 chronic kidney disease"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0000822",
+        "label": "Hypertension"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0040084",
+        "label": "Abnormal circulating renin concentration"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0040085",
+        "label": "Abnormal circulating aldosterone concentration"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0000790",
+        "label": "Hematuria"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0000093",
+        "label": "Proteinuria"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0000107",
+        "label": "Renal cyst"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0001562",
+        "label": "Oligohydramnios"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0000325",
+        "label": "Triangular face"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0000278",
+        "label": "Retrognathia"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0005407",
+        "label": "Decreased proportion of CD4-positive helper T cells"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0012450",
+        "label": "Chronic constipation"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0001919",
+        "label": "Acute kidney injury"
+      },
+      "excluded": true
+    }
+  ],
+  "interpretations": [
+    {
+      "id": "2-III:1",
+      "progressStatus": "SOLVED",
+      "diagnosis": {
+        "disease": {
+          "id": "OMIM:617056",
+          "label": "Tubulointerstitial kidney disease, autosomal dominant, 5"
+        },
+        "genomicInterpretations": [
+          {
+            "subjectOrBiosampleId": "2-III:1",
+            "interpretationStatus": "CAUSATIVE",
+            "variantInterpretation": {
+              "variationDescriptor": {
+                "id": "var_UcQXjtCNwgethRPVAOHOZTDAo",
+                "geneContext": {
+                  "valueId": "HGNC:18276",
+                  "symbol": "SEC61A1"
+                },
+                "expressions": [
+                  {
+                    "syntax": "hgvs.c",
+                    "value": "NM_013336.4:c.200T>G"
+                  },
+                  {
+                    "syntax": "hgvs.g",
+                    "value": "NC_000003.12:g.128055731T>G"
+                  }
+                ],
+                "vcfRecord": {
+                  "genomeAssembly": "hg38",
+                  "chrom": "chr3",
+                  "pos": "128055731",
+                  "ref": "T",
+                  "alt": "G"
+                },
+                "moleculeContext": "genomic",
+                "allelicState": {
+                  "id": "GENO:0000135",
+                  "label": "heterozygous"
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "diseases": [
+    {
+      "term": {
+        "id": "OMIM:617056",
+        "label": "Tubulointerstitial kidney disease, autosomal dominant, 5"
+      },
+      "onset": {
+        "age": {
+          "iso8601duration": "P14D"
+        }
+      }
+    }
+  ],
+  "metaData": {
+    "created": "2024-10-01T10:12:07.052063941Z",
+    "createdBy": "ORCID:0000-0002-0736-9199",
+    "resources": [
+      {
+        "id": "geno",
+        "name": "Genotype Ontology",
+        "url": "http://purl.obolibrary.org/obo/geno.owl",
+        "version": "2022-03-05",
+        "namespacePrefix": "GENO",
+        "iriPrefix": "http://purl.obolibrary.org/obo/GENO_"
+      },
+      {
+        "id": "hgnc",
+        "name": "HUGO Gene Nomenclature Committee",
+        "url": "https://www.genenames.org",
+        "version": "06/01/23",
+        "namespacePrefix": "HGNC",
+        "iriPrefix": "https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/"
+      },
+      {
+        "id": "omim",
+        "name": "An Online Catalog of Human Genes and Genetic Disorders",
+        "url": "https://www.omim.org",
+        "version": "January 4, 2023",
+        "namespacePrefix": "OMIM",
+        "iriPrefix": "https://www.omim.org/entry/"
+      },
+      {
+        "id": "so",
+        "name": "Sequence types and features ontology",
+        "url": "http://purl.obolibrary.org/obo/so.obo",
+        "version": "2021-11-22",
+        "namespacePrefix": "SO",
+        "iriPrefix": "http://purl.obolibrary.org/obo/SO_"
+      },
+      {
+        "id": "hp",
+        "name": "human phenotype ontology",
+        "url": "http://purl.obolibrary.org/obo/hp.owl",
+        "version": "2024-08-13",
+        "namespacePrefix": "HP",
+        "iriPrefix": "http://purl.obolibrary.org/obo/HP_"
+      }
+    ],
+    "phenopacketSchemaVersion": "2.0",
+    "externalReferences": [
+      {
+        "id": "PMID:27392076",
+        "reference": "https://pubmed.ncbi.nlm.nih.gov/27392076",
+        "description": "Heterozygous Loss-of-Function SEC61A1 Mutations Cause Autosomal-Dominant Tubulo-Interstitial and Glomerulocystic Kidney Disease with Anemia"
+      }
+    ]
+  }
+}

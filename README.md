@@ -138,14 +138,34 @@ Outputs Top-5 accuracy and Mean Reciprocal Rank over all JSON cases.
 
 ---
 
+## 🗃️ Download & Expand Test Set
+
+为了进行更大规模的评估，建议下载并使用 Monarch Initiative 提供的真实 phenopacket 数据：
+
+```bash
+# 下载并解压所有 phenopacket JSON
+wget -O all_phenopackets.zip \
+  https://github.com/monarch-initiative/phenopacket-store/releases/download/0.1.25/all_phenopackets.zip
+unzip all_phenopackets.zip -d phenopackets
+```
+
+解压后 `phenopackets/` 目录会包含以基因或变异命名的子文件夹，每个文件夹内含一个或多个 phenopacket JSON。
+
+然后即可使用 batch evaluation：
+
+```bash
+python src/evaluate.py \
+  --phenopacket_dir phenopackets \
+  --topk 5
+```
+
+---
+
 ## 📈 Next Steps
 
-- **Expand test set** with real or synthetic phenopackets.
 - **Improve aggregation** (weighted pooling or attention).
 - **Extract HPO codes** automatically from clinical narratives.
 - **Deploy** as an API (Flask / FastAPI).
-
----
 
 ## ⚠️ Notes
 

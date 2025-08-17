@@ -1,0 +1,201 @@
+{
+  "id": "PMID_19640924_patient",
+  "subject": {
+    "id": "patient",
+    "timeAtLastEncounter": {
+      "age": {
+        "iso8601duration": "P9M"
+      }
+    },
+    "vitalStatus": {
+      "status": "ALIVE"
+    },
+    "sex": "MALE"
+  },
+  "phenotypicFeatures": [
+    {
+      "type": {
+        "id": "HP:0002164",
+        "label": "Nail dysplasia"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0001792",
+        "label": "Small nail"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0003027",
+        "label": "Mesomelia"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0011304",
+        "label": "Broad thumb"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0001177",
+        "label": "Preaxial hand polydactyly"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0001233",
+        "label": "2-3 finger cutaneous syndactyly"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0001849",
+        "label": "Foot oligodactyly"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0200105",
+        "label": "Absent fifth toenail"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0002937",
+        "label": "Hemivertebrae"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0000316",
+        "label": "Hypertelorism"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0001629",
+        "label": "Ventricular septal defect"
+      },
+      "excluded": true
+    }
+  ],
+  "interpretations": [
+    {
+      "id": "patient",
+      "progressStatus": "SOLVED",
+      "diagnosis": {
+        "disease": {
+          "id": "OMIM:268310",
+          "label": "Robinow syndrome, autosomal recessive"
+        },
+        "genomicInterpretations": [
+          {
+            "subjectOrBiosampleId": "patient",
+            "interpretationStatus": "CAUSATIVE",
+            "variantInterpretation": {
+              "variationDescriptor": {
+                "id": "var_avBfrBhmkmWpCMqMgREXeNTot",
+                "geneContext": {
+                  "valueId": "HGNC:10257",
+                  "symbol": "ROR2"
+                },
+                "expressions": [
+                  {
+                    "syntax": "hgvs.c",
+                    "value": "NM_004560.4:c.1324C>T"
+                  },
+                  {
+                    "syntax": "hgvs.g",
+                    "value": "NC_000009.12:g.91726603G>A"
+                  }
+                ],
+                "vcfRecord": {
+                  "genomeAssembly": "hg38",
+                  "chrom": "chr9",
+                  "pos": "91726603",
+                  "ref": "G",
+                  "alt": "A"
+                },
+                "moleculeContext": "genomic",
+                "allelicState": {
+                  "id": "GENO:0000136",
+                  "label": "homozygous"
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "diseases": [
+    {
+      "term": {
+        "id": "OMIM:268310",
+        "label": "Robinow syndrome, autosomal recessive"
+      },
+      "onset": {
+        "ontologyClass": {
+          "id": "HP:0003577",
+          "label": "Congenital onset"
+        }
+      }
+    }
+  ],
+  "metaData": {
+    "created": "2024-11-03T18:37:28.253566026Z",
+    "createdBy": "ORCID:0000-0002-0736-9199",
+    "resources": [
+      {
+        "id": "geno",
+        "name": "Genotype Ontology",
+        "url": "http://purl.obolibrary.org/obo/geno.owl",
+        "version": "2022-03-05",
+        "namespacePrefix": "GENO",
+        "iriPrefix": "http://purl.obolibrary.org/obo/GENO_"
+      },
+      {
+        "id": "hgnc",
+        "name": "HUGO Gene Nomenclature Committee",
+        "url": "https://www.genenames.org",
+        "version": "06/01/23",
+        "namespacePrefix": "HGNC",
+        "iriPrefix": "https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/"
+      },
+      {
+        "id": "omim",
+        "name": "An Online Catalog of Human Genes and Genetic Disorders",
+        "url": "https://www.omim.org",
+        "version": "January 4, 2023",
+        "namespacePrefix": "OMIM",
+        "iriPrefix": "https://www.omim.org/entry/"
+      },
+      {
+        "id": "so",
+        "name": "Sequence types and features ontology",
+        "url": "http://purl.obolibrary.org/obo/so.obo",
+        "version": "2021-11-22",
+        "namespacePrefix": "SO",
+        "iriPrefix": "http://purl.obolibrary.org/obo/SO_"
+      },
+      {
+        "id": "hp",
+        "name": "human phenotype ontology",
+        "url": "http://purl.obolibrary.org/obo/hp.owl",
+        "version": "2024-08-13",
+        "namespacePrefix": "HP",
+        "iriPrefix": "http://purl.obolibrary.org/obo/HP_"
+      }
+    ],
+    "phenopacketSchemaVersion": "2.0",
+    "externalReferences": [
+      {
+        "id": "PMID:19640924",
+        "reference": "https://pubmed.ncbi.nlm.nih.gov/19640924",
+        "description": "A gradient of ROR2 protein stability and membrane localization confers brachydactyly type B or Robinow syndrome phenotypes"
+      }
+    ]
+  }
+}

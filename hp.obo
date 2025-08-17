@@ -115,7 +115,7 @@ xref: UMLS:C4025900
 is_a: HP:0000812 ! Abnormal internal genitalia
 is_a: HP:0010460 ! Abnormality of the female genitalia
 
-[Term]
+[Term]relationshiprelationship
 id: HP:0000009
 name: Functional abnormality of the bladder
 alt_id: HP:0004424

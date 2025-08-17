@@ -1,0 +1,348 @@
+{
+  "id": "PMID_37163662_Family_A_Patient_2",
+  "subject": {
+    "id": "Family A Patient 2",
+    "timeAtLastEncounter": {
+      "age": {
+        "iso8601duration": "P11Y"
+      }
+    },
+    "vitalStatus": {
+      "status": "ALIVE"
+    },
+    "sex": "FEMALE"
+  },
+  "phenotypicFeatures": [
+    {
+      "type": {
+        "id": "HP:0034391",
+        "label": "Elbow contracture"
+      },
+      "onset": {
+        "ontologyClass": {
+          "id": "HP:0003577",
+          "label": "Congenital onset"
+        }
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0034671",
+        "label": "Knee contracture"
+      },
+      "onset": {
+        "ontologyClass": {
+          "id": "HP:0003577",
+          "label": "Congenital onset"
+        }
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0001252",
+        "label": "Hypotonia"
+      },
+      "onset": {
+        "ontologyClass": {
+          "id": "HP:0003577",
+          "label": "Congenital onset"
+        }
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0001263",
+        "label": "Global developmental delay"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0000750",
+        "label": "Delayed speech and language development"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0001270",
+        "label": "Motor delay"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0001249",
+        "label": "Intellectual disability"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0003691",
+        "label": "Scapular winging"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0003306",
+        "label": "Spinal rigidity"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0002650",
+        "label": "Scoliosis"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0002808",
+        "label": "Kyphosis"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0000508",
+        "label": "Ptosis"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0000465",
+        "label": "Webbed neck"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0000218",
+        "label": "High palate"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0001181",
+        "label": "Adducted thumb"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0001382",
+        "label": "Joint hypermobility"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0000954",
+        "label": "Single transverse palmar crease"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0000160",
+        "label": "Narrow mouth"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0000252",
+        "label": "Microcephaly"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0100021",
+        "label": "Cerebral palsy"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0410030",
+        "label": "Cleft lip"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0000175",
+        "label": "Cleft palate"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0001629",
+        "label": "Ventricular septal defect"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0001684",
+        "label": "Secundum atrial septal defect"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0002507",
+        "label": "Semilobar holoprosencephaly"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0011816",
+        "label": "Parietal encephalocele"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0001250",
+        "label": "Seizure"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0000505",
+        "label": "Visual impairment"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0000873",
+        "label": "Diabetes insipidus"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0001562",
+        "label": "Oligohydramnios"
+      },
+      "excluded": true
+    }
+  ],
+  "interpretations": [
+    {
+      "id": "Family A Patient 2",
+      "progressStatus": "SOLVED",
+      "diagnosis": {
+        "disease": {
+          "id": "OMIM:620775",
+          "label": "Neuromuscular disorder, congenital, with dysmorphic facies"
+        },
+        "genomicInterpretations": [
+          {
+            "subjectOrBiosampleId": "Family A Patient 2",
+            "interpretationStatus": "CAUSATIVE",
+            "variantInterpretation": {
+              "variationDescriptor": {
+                "id": "var_JHYxPwZvuPXnAArsxXSEkFQbd",
+                "geneContext": {
+                  "valueId": "HGNC:21015",
+                  "symbol": "FILIP1"
+                },
+                "expressions": [
+                  {
+                    "syntax": "hgvs.c",
+                    "value": "NM_015687.5:c.169C>T"
+                  },
+                  {
+                    "syntax": "hgvs.g",
+                    "value": "NC_000006.12:g.75414804G>A"
+                  }
+                ],
+                "vcfRecord": {
+                  "genomeAssembly": "hg38",
+                  "chrom": "chr6",
+                  "pos": "75414804",
+                  "ref": "G",
+                  "alt": "A"
+                },
+                "moleculeContext": "genomic",
+                "allelicState": {
+                  "id": "GENO:0000136",
+                  "label": "homozygous"
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "diseases": [
+    {
+      "term": {
+        "id": "OMIM:620775",
+        "label": "Neuromuscular disorder, congenital, with dysmorphic facies"
+      },
+      "onset": {
+        "ontologyClass": {
+          "id": "HP:0003577",
+          "label": "Congenital onset"
+        }
+      }
+    }
+  ],
+  "metaData": {
+    "created": "2024-09-22T07:40:49.420078039Z",
+    "createdBy": "ORCID:0000-0002-0736-9199",
+    "resources": [
+      {
+        "id": "geno",
+        "name": "Genotype Ontology",
+        "url": "http://purl.obolibrary.org/obo/geno.owl",
+        "version": "2022-03-05",
+        "namespacePrefix": "GENO",
+        "iriPrefix": "http://purl.obolibrary.org/obo/GENO_"
+      },
+      {
+        "id": "hgnc",
+        "name": "HUGO Gene Nomenclature Committee",
+        "url": "https://www.genenames.org",
+        "version": "06/01/23",
+        "namespacePrefix": "HGNC",
+        "iriPrefix": "https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/"
+      },
+      {
+        "id": "omim",
+        "name": "An Online Catalog of Human Genes and Genetic Disorders",
+        "url": "https://www.omim.org",
+        "version": "January 4, 2023",
+        "namespacePrefix": "OMIM",
+        "iriPrefix": "https://www.omim.org/entry/"
+      },
+      {
+        "id": "so",
+        "name": "Sequence types and features ontology",
+        "url": "http://purl.obolibrary.org/obo/so.obo",
+        "version": "2021-11-22",
+        "namespacePrefix": "SO",
+        "iriPrefix": "http://purl.obolibrary.org/obo/SO_"
+      },
+      {
+        "id": "hp",
+        "name": "human phenotype ontology",
+        "url": "http://purl.obolibrary.org/obo/hp.owl",
+        "version": "2024-08-13",
+        "namespacePrefix": "HP",
+        "iriPrefix": "http://purl.obolibrary.org/obo/HP_"
+      }
+    ],
+    "phenopacketSchemaVersion": "2.0",
+    "externalReferences": [
+      {
+        "id": "PMID:37163662",
+        "reference": "https://pubmed.ncbi.nlm.nih.gov/37163662",
+        "description": "Bi-allelic variants of FILIP1 cause congenital myopathy, dysmorphism and neurological defects"
+      }
+    ]
+  }
+}

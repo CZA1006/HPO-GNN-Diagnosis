@@ -1,0 +1,220 @@
+{
+  "id": "PMID_38433265_mother_II_1",
+  "subject": {
+    "id": "mother II:1",
+    "timeAtLastEncounter": {
+      "age": {
+        "iso8601duration": "P55Y"
+      }
+    },
+    "sex": "FEMALE"
+  },
+  "phenotypicFeatures": [
+    {
+      "type": {
+        "id": "HP:0001075",
+        "label": "Atrophic scars"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0000978",
+        "label": "Bruising susceptibility"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0003010",
+        "label": "Prolonged bleeding time"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0001382",
+        "label": "Joint hypermobility"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0100550",
+        "label": "Tendon rupture"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0012095",
+        "label": "Multiple joint dislocation"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0025509",
+        "label": "Piezogenic pedal papules"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0005293",
+        "label": "Venous insufficiency"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:6000342",
+        "label": "Thickened mitral valve cusp"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0005113",
+        "label": "Aortic arch aneurysm"
+      }
+    },
+    {
+      "type": {
+        "id": "HP:0000974",
+        "label": "Hyperextensible skin"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0004970",
+        "label": "Ascending tubular aorta aneurysm"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0001638",
+        "label": "Cardiomyopathy"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0011873",
+        "label": "Abnormal platelet count"
+      },
+      "excluded": true
+    },
+    {
+      "type": {
+        "id": "HP:0032199",
+        "label": "Abnormal prothrombin time"
+      },
+      "excluded": true
+    }
+  ],
+  "interpretations": [
+    {
+      "id": "mother II:1",
+      "progressStatus": "SOLVED",
+      "diagnosis": {
+        "disease": {
+          "id": "OMIM:620865",
+          "label": "Ehlers-Danlos syndrome, classic-like, 3"
+        },
+        "genomicInterpretations": [
+          {
+            "subjectOrBiosampleId": "mother II:1",
+            "interpretationStatus": "CAUSATIVE",
+            "variantInterpretation": {
+              "variationDescriptor": {
+                "id": "var_cLRorPwxrBqtlAOLqJaBmeyqP",
+                "geneContext": {
+                  "valueId": "HGNC:11786",
+                  "symbol": "THBS2"
+                },
+                "expressions": [
+                  {
+                    "syntax": "hgvs.c",
+                    "value": "NM_003247.5:c.2686T>C"
+                  },
+                  {
+                    "syntax": "hgvs.g",
+                    "value": "NC_000006.12:g.169225232A>G"
+                  }
+                ],
+                "vcfRecord": {
+                  "genomeAssembly": "hg38",
+                  "chrom": "chr6",
+                  "pos": "169225232",
+                  "ref": "A",
+                  "alt": "G"
+                },
+                "moleculeContext": "genomic",
+                "allelicState": {
+                  "id": "GENO:0000135",
+                  "label": "heterozygous"
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "diseases": [
+    {
+      "term": {
+        "id": "OMIM:620865",
+        "label": "Ehlers-Danlos syndrome, classic-like, 3"
+      }
+    }
+  ],
+  "metaData": {
+    "created": "2024-08-04T17:01:08.408526182Z",
+    "createdBy": "ORCID:0000-0002-0736-9199",
+    "resources": [
+      {
+        "id": "geno",
+        "name": "Genotype Ontology",
+        "url": "http://purl.obolibrary.org/obo/geno.owl",
+        "version": "2022-03-05",
+        "namespacePrefix": "GENO",
+        "iriPrefix": "http://purl.obolibrary.org/obo/GENO_"
+      },
+      {
+        "id": "hgnc",
+        "name": "HUGO Gene Nomenclature Committee",
+        "url": "https://www.genenames.org",
+        "version": "06/01/23",
+        "namespacePrefix": "HGNC",
+        "iriPrefix": "https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/"
+      },
+      {
+        "id": "omim",
+        "name": "An Online Catalog of Human Genes and Genetic Disorders",
+        "url": "https://www.omim.org",
+        "version": "January 4, 2023",
+        "namespacePrefix": "OMIM",
+        "iriPrefix": "https://www.omim.org/entry/"
+      },
+      {
+        "id": "so",
+        "name": "Sequence types and features ontology",
+        "url": "http://purl.obolibrary.org/obo/so.obo",
+        "version": "2021-11-22",
+        "namespacePrefix": "SO",
+        "iriPrefix": "http://purl.obolibrary.org/obo/SO_"
+      },
+      {
+        "id": "hp",
+        "name": "human phenotype ontology",
+        "url": "http://purl.obolibrary.org/obo/hp.owl",
+        "version": "2024-07-01",
+        "namespacePrefix": "HP",
+        "iriPrefix": "http://purl.obolibrary.org/obo/HP_"
+      }
+    ],
+    "phenopacketSchemaVersion": "2.0",
+    "externalReferences": [
+      {
+        "id": "PMID:38433265",
+        "reference": "https://pubmed.ncbi.nlm.nih.gov/38433265",
+        "description": "Heterozygous THBS2 pathogenic variant causes Ehlers-Danlos syndrome with prominent vascular features in humans and mice"
+      }
+    ]
+  }
+}
