@@ -1,175 +1,178 @@
 # HPO-GNN-Diagnosis
 
-An end-to-end pipeline that combines text and graph neural embeddings of the Human Phenotype Ontology (HPO) to automatically diagnose diseases from patient phenotypic features.
+Phenotype-driven disease ranking with the Human Phenotype Ontology (HPO).  
+This pipeline learns **term embeddings** from the HPO graph, pools them into **disease embeddings** using HPOA, and ranks candidate diseases for patients described by HPO terms (Phenopackets).
 
 ---
 
-## 📂 Repository Structure
+## What’s included
 
-```
-HPO-GNN-Diagnosis/
-├── checkpoints/                     # Model outputs and embeddings
-│   ├── hpo_tsdae_encoder/           # Fine-tuned BioBERT TSDAE weights
-│   │   ├── config.json
-│   │   └── model.safetensors
-│   ├── node_list.pt                 # Ordered list of HPO term IDs
-│   ├── hpo_gcl_embeddings.pt        # Joint text+graph term embeddings
-│   ├── disease_ids.pt               # List of disease names/IDs
-│   └── disease_embs.pt              # Pooled disease embeddings
-├── phenopackets/                    # Sample patient phenopackets
-│   └── test.json                    # Example phenopacket (JSON)
-├── src/                              
-│   ├── hpo_tsdae.py                  # TSDAE fine-tuning on term texts
-│   ├── hpo_gcl.py                    # Graph contrastive GNN training
-│   ├── aggregate_disease_embeddings.py  # Pool term → disease vectors
-│   ├── diagnose.py                   # Rank diseases for one patient
-│   ├── evaluate.py                   # Batch-evaluate on JSON folder
-│   └── requirements.txt              # Python dependencies
-├── hp.obo                            # HPO ontology (OBO format)
-├── phenotype.hpoa                    # Disease ↔ HPO annotations
-├── README.md                         # This file
-└── .gitignore                        # Ignore checkpoints, envs, data
-```
+- **IC with ancestor propagation** (`src/compute_ic.py`) for robust term weighting.
+- **GCL (graph contrastive learning)** over the HPO DAG → dense term embeddings.
+- **Disease embeddings** from IC × frequency, with **optional ancestor expansion**.
+- **Patient embedding** with ancestor expansion and optional subtraction of **negated** HPOs.
+- **Evaluation** (`src/evaluate.py`) with:
+  - Exact-ID metrics (Top-K, MRR, ROC/AUC).
+  - **MONDO canonicalization** (OMIM/ORPHA/DECIPHER → MONDO) so synonyms count.
+  - **IC-aware phenotype-overlap filtering** to shrink the candidate set before ranking.
+  - Flexible reporting: multiple Top-K via `--report_top`.
 
 ---
 
-## 🛠️ Setup
-
-1. **Clone & create venv**
-
-   ```bash
-   git clone https://github.com/CZA1006/HPO-GNN-Diagnosis.git
-   cd HPO-GNN-Diagnosis
-   python3 -m venv .venv
-   source .venv/bin/activate   # Windows: .venv\Scripts\activate
-   pip install --upgrade pip
-   ```
-
-2. **Install dependencies**
-
-   ```bash
-   pip install -r src/requirements.txt
-   ```
-
-3. **Download data files**
-
-   ```bash
-   wget -O hp.obo \
-     https://raw.githubusercontent.com/obophenotype/human-phenotype-ontology/master/hp.obo
-
-   wget -O phenotype.hpoa \
-     https://github.com/obophenotype/human-phenotype-ontology/releases/download/v2025-05-06/phenotype.hpoa
-   ```
-
----
-
-## 🚀 Usage
-
-### 1. Fine-tune TSDAE on HPO Terms
+## Setup
 
 ```bash
-python src/hpo_tsdae.py \
-  --hpo_obo hp.obo \
-  --model_name dmis-lab/biobert-v1.1 \
-  --batch_size 16 \
-  --lr 5e-5 \
-  --epochs 5 \
-  --device cuda    # or cpu
+# Python 3.9–3.11 recommended
+python -m venv .venv
+source .venv/bin/activate          # Windows: .venv\Scriptsctivate
+pip install --upgrade pip
+
+# Core dependencies
+pip install torch torch-geometric transformers obonet networkx scikit-learn matplotlib
 ```
 
-Outputs: `checkpoints/hpo_tsdae_encoder/`
+### Required data (put in repo root or pass paths via CLI)
 
----
+- `hp.obo` — Human Phenotype Ontology  
+- `phenotype.hpoa` — HPO disease ↔ term annotations  
+- `phenopackets/` — directory of Phenopacket v2 JSONs (your cases)  
+- *(optional but recommended for eval)* `mondo.obo` — MONDO Disease Ontology
 
-### 2. Graph Contrastive Learning (GCL)
-
-```bash
-python src/hpo_gcl.py \
-  --obo hp.obo \
-  --tsdae_ckpt checkpoints/hpo_tsdae_encoder \
-  --model_name dmis-lab/biobert-v1.1 \
-  --epochs 100 \
-  --device cuda    # or cpu
-```
-
-Creates:
-
-- `checkpoints/node_list.pt`
-- `checkpoints/hpo_gcl_embeddings.pt`
-
----
-
-### 3. Aggregate Disease Embeddings
+Get MONDO (latest):
 
 ```bash
-python src/aggregate_disease_embeddings.py
-```
-
-Produces:
-
-- `checkpoints/disease_ids.pt`
-- `checkpoints/disease_embs.pt`
-
----
-
-### 4. Diagnose a Single Patient
-
-```bash
-python src/diagnose.py \
-  --term_node_list checkpoints/node_list.pt \
-  --term_embs      checkpoints/hpo_gcl_embeddings.pt \
-  --disease_ids    checkpoints/disease_ids.pt \
-  --disease_embs   checkpoints/disease_embs.pt \
-  --patient_hpos   HP:0001250,HP:0004321 \
-  --topk           10
+curl -L -o mondo.obo http://purl.obolibrary.org/obo/mondo.obo
 ```
 
 ---
 
-### 5. Batch Evaluation
+## Quickstart (end-to-end)
+
+Artifacts are written to `checkpoints/`.
+
+### 1) (Optional) TSDAE on HPO text
 
 ```bash
-python src/evaluate.py \
-  --phenopacket_dir phenopackets \
-  --topk 5
+python src/hpo_tsdae.py --hpo_obo hp.obo --epochs 3
+# → checkpoints/hpo_tsdae_encoder/
 ```
 
-Outputs Top-5 accuracy and Mean Reciprocal Rank over all JSON cases.
+### 2) HPO Graph Contrastive Learning (GCL)
+
+```bash
+python src/hpo_gcl.py   --obo hp.obo   --tsdae_ckpt checkpoints/hpo_tsdae_encoder   --epochs 100
+# → checkpoints/node_list.pt, checkpoints/hpo_gcl_embeddings.pt
+```
+
+### 3) Information Content (IC) with ancestor propagation
+
+```bash
+python src/compute_ic.py
+# → checkpoints/hpo_ic.pt
+```
+
+### 4) Aggregate disease embeddings (IC × frequency)
+
+**Baseline:**
+```bash
+python src/aggregate_disease_embeddings.py   --node_list checkpoints/node_list.pt   --term_embs checkpoints/hpo_gcl_embeddings.pt   --hpoa phenotype.hpoa   --ic checkpoints/hpo_ic.pt
+# → checkpoints/disease_ids.pt, checkpoints/disease_embs.pt
+```
+
+**Recommended (mirror patient ancestor expansion):**
+```bash
+python src/aggregate_disease_embeddings.py   --node_list checkpoints/node_list.pt   --term_embs checkpoints/hpo_gcl_embeddings.pt   --hpoa phenotype.hpoa   --ic checkpoints/hpo_ic.pt   --obo hp.obo   --ancestor_depth 2 --ancestor_decay 0.7
+```
+
+### 5) Single-patient diagnosis (sanity check)
+
+```bash
+python src/diagnose.py   --obo hp.obo   --term_node_list checkpoints/node_list.pt   --term_embs checkpoints/hpo_gcl_embeddings.pt   --disease_ids checkpoints/disease_ids.pt   --disease_embs checkpoints/disease_embs.pt   --patient_hpos "HP:0001250,HP:0001263,HP:0001249"   --topk 10
+```
+
+### 6) Batch evaluation
+
+**Baseline (exact IDs, full candidate set):**
+```bash
+python src/evaluate.py   --phenopackets_dir phenopackets   --k 5   --hpoa phenotype.hpoa   --obo hp.obo   --ic checkpoints/hpo_ic.pt   --report_top 5 10 50 100
+```
+
+**Recommended (synonyms + IC-aware filtering):**
+```bash
+python src/evaluate.py   --phenopackets_dir phenopackets   --k 5   --hpoa phenotype.hpoa   --obo hp.obo   --mondo mondo.obo   --ic checkpoints/hpo_ic.pt   --filter_by_overlap --filter_depth 1   --filter_min_terms 3 --filter_min_ic 3.0 --filter_keep_top 300   --report_top 5 10 50 100
+```
+This configuration:
+- canonicalizes IDs via **MONDO** so ORPHA/DECIPHER hits count for OMIM golds,
+- keeps only diseases that meaningfully **overlap** the patient phenotype (by term count + IC),
+- ranks the pruned set by cosine similarity.
 
 ---
 
-## 🗃️ Download & Expand Test Set
+## Key scripts & options
 
-为了进行更大规模的评估，建议下载并使用 Monarch Initiative 提供的真实 phenopacket 数据：
+- `src/compute_ic.py` — Resnik-style IC with ancestor propagation over HPOA.
+- `src/hpo_gcl.py` — Graph contrastive learning to get term embeddings.
+- `src/aggregate_disease_embeddings.py`
+  - `--ancestor_depth / --ancestor_decay` for disease-side ancestor expansion (0 disables).
+- `src/diagnose.py`
+  - Patient embedding with ancestor expansion; optional subtraction of negated HPOs.
+  - Clamps Top-K to available candidates (prevents `topk out of range`).
+- `src/evaluate.py`
+  - `--mondo mondo.obo` → synonym-aware scoring (OMIM/ORPHA/DECIPHER → MONDO).
+  - `--filter_by_overlap` → enable phenotype-overlap filtering.
+    - `--filter_depth` (patient ancestor expansion depth for the overlap set)
+    - `--filter_min_terms` (min overlapping HPOs to keep a disease)
+    - `--filter_min_ic` (min IC sum of overlaps to keep a disease)
+    - `--filter_keep_top` (cap candidates by overlap-IC before ranking)
+  - `--patient_depth / --patient_decay` → tune patient pooling.
+  - `--report_top` → print multiple Top-K/MRR (e.g., `5 10 50 100`).
 
-```bash
-# 下载并解压所有 phenopacket JSON
-wget -O all_phenopackets.zip \
-  https://github.com/monarch-initiative/phenopacket-store/releases/download/0.1.25/all_phenopackets.zip
-unzip all_phenopackets.zip -d phenopackets
+**Tip:** Aim for filtered candidate sizes in the **few hundreds** while keeping the gold label present after filtering (high recall). Tighten/loosen thresholds accordingly.
+
+---
+
+## Interpreting results
+
+- With full-universe ranking (~10–13k diseases), Top-5 can look small, especially with sparse phenotypes.
+- Expect a **large jump** after:
+  1) MONDO canonicalization (synonyms count),
+  2) IC-aware overlap filtering (smaller, more relevant candidate pools),
+  3) disease-side ancestor expansion (aligns with patient pooling).
+
+---
+
+## Troubleshooting
+
+- **`RuntimeError: selected index k out of range`**  
+  Update `src/diagnose.py` (Top-K is clamped). Present in this repo’s version.
+- **`AttributeError: '_ic_map' None`**  
+  `src/evaluate.py` calls `diagnose.ensure_loaded(...)` after loading tensors; ensure you’re on the updated files.
+- **`torch.load` FutureWarning**  
+  Safe to ignore for these artifacts; we load general pickles (lists/dicts/tensors).
+
+---
+
+## Repository layout
+
 ```
-
-解压后 `phenopackets/` 目录会包含以基因或变异命名的子文件夹，每个文件夹内含一个或多个 phenopacket JSON。
-
-然后即可使用 batch evaluation：
-
-```bash
-python src/evaluate.py \
-  --phenopacket_dir phenopackets \
-  --topk 5
+.
+├─ src/
+│  ├─ hpo_tsdae.py                    # TSDAE on HPO term text (optional)
+│  ├─ hpo_gcl.py                      # Graph contrastive learning → term embs
+│  ├─ compute_ic.py                   # IC with ancestor propagation
+│  ├─ aggregate_disease_embeddings.py # Pool term → disease embs (IC × freq × ancestors)
+│  ├─ diagnose.py                     # Patient embedding + cosine ranking
+│  └─ evaluate.py                     # Batch eval (MONDO + filtering)
+├─ checkpoints/                       # Saved artifacts (.pt)
+├─ phenopackets/                      # Your Phenopacket JSONs
+├─ hp.obo, phenotype.hpoa, mondo.obo  # Ontologies / annotations
+└─ README.md
 ```
 
 ---
 
-## 📈 Next Steps
+## Tips to push accuracy
 
-- **Improve aggregation** (weighted pooling or attention).
-- **Extract HPO codes** automatically from clinical narratives.
-- **Deploy** as an API (Flask / FastAPI).
-
-## ⚠️ Notes
-
-- **GPU recommended** for reasonable training speed.
-- Paths and hyperparameters are configurable via CLI flags.
-- Feel free to open issues or PRs for enhancements!
-
+- Train **TSDAE** for 3–5 epochs and **GCL** for 200–400 epochs.
+- Use richer patient phenotypes (≥3–5 informative HPOs) when available.
+- Tune `--filter_*` until candidate size is a few hundred **without** dropping the gold label.
