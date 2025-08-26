@@ -1,179 +1,141 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-diagnose.py — Embed a patient’s HPO set and rank candidate diseases.
+diagnose.py
+Rank candidate diseases for a patient given HPO terms.
 
-- Lazily loads IC map and HPO parents on first use (or via ensure_loaded()).
-- Safely clamps topk to the number of candidates.
-- Supports ancestor expansion and optional subtraction of negated codes.
+Patient vector = pooled sum of term embeddings with weights:
+  w = IC(term) * (idf(term) ** idf_gamma) * (ancestor_decay ** distance)
+Negated HPOs subtract their contribution.
 """
-import os
+
+import argparse, os, math
 import torch
-import obonet
-from collections import deque
-from typing import Dict, Iterable, List
+import importlib.util
 
-# Globals (lazy-initialized)
-_ic_map: Dict[str, float] = None
-_parents: Dict[str, List[str]] = None
-_default_ic: float = 0.0
-_ic_path: str = "checkpoints/hpo_ic.pt"
-_obo_path: str = "hp.obo"
+# ---------------- global caches ----------------
+_ic_path = "checkpoints/hpo_ic.pt"
+_ic_map = None
+_idf_path = None
+_idf_map = None
+_idf_gamma = 1.0
+_parents = None
 
-# ---------- resource loaders ----------
-def _load_ic(path: str = None):
-    global _ic_map, _default_ic, _ic_path
-    if path is not None:
-        _ic_path = path
-    if _ic_map is None:
-        _ic_map = torch.load(_ic_path)
-        _default_ic = min(_ic_map.values()) if _ic_map else 0.0
+def _import_obonet():
+    import obonet
+    return obonet
 
-def _load_parents(obo_path: str = None):
-    """Use obonet to get parent (is_a + part_of) relationships."""
-    global _parents, _obo_path
-    if obo_path is not None:
-        _obo_path = obo_path
-    if _parents is not None:
-        return
-    if not os.path.exists(_obo_path):
-        raise FileNotFoundError(f"Cannot find obo file: {_obo_path}")
-
-    graph = obonet.read_obo(_obo_path)
-    parents = {n: set() for n in graph.nodes()}
-
-    for n, d in graph.nodes(data=True):
+def _load_parents(obo_path):
+    obonet = _import_obonet()
+    g = obonet.read_obo(obo_path)
+    parents = {}
+    for n, d in g.nodes(data=True):
+        if not n.startswith("HP:"): continue
+        ps = set()
         for p in d.get("is_a", []):
             p = p.split("!")[0].strip()
             if p.startswith("HP:"):
-                parents[n].add(p)
+                ps.add(p)
         for rel in d.get("relationship", []):
             if "part_of" in rel and "HP:" in rel:
                 pid = rel.split("HP:")[1][:7]
-                parents[n].add("HP:" + pid)
+                ps.add("HP:"+pid)
+        if ps: parents[n] = sorted(ps)
+    return parents
 
-    _parents = {k: sorted(list(v)) for k, v in parents.items() if v}
+def ensure_loaded(obo_path="hp.obo", ic_path="checkpoints/hpo_ic.pt",
+                  idf_path=None, idf_gamma=1.0):
+    global _ic_path, _ic_map, _parents, _idf_path, _idf_map, _idf_gamma
+    if _ic_map is None or _ic_path != ic_path:
+        _ic_path = ic_path
+        _ic_map = torch.load(ic_path)
+    if _parents is None and os.path.exists(obo_path):
+        _parents = _load_parents(obo_path)
+    if idf_path and ( _idf_map is None or _idf_path != idf_path ):
+        _idf_path  = idf_path
+        _idf_map   = torch.load(idf_path)
+        _idf_gamma = float(idf_gamma)
 
-def ensure_loaded(obo_path: str = None, ic_path: str = None):
-    """Public helper: call this once from other scripts after setting paths."""
-    _load_ic(ic_path)
-    _load_parents(obo_path)
-
-# ---------- small utilities ----------
-def _ancestors(term: str, max_depth: int = 2):
-    """Return dict ancestor->distance (1..max_depth)."""
-    if _parents is None:
-        _load_parents()  # use last-known/default path
-    if term not in _parents:
-        return {}
-    out = {}
-    q = deque([(term, 0)])
-    seen = {term}
+def _ancestors(term, max_depth):
+    if _parents is None or max_depth <= 0: return {}
+    from collections import deque
+    out, q, seen = {}, deque([(term, 0)]), {term}
     while q:
-        t, d = q.popleft()
-        if d == max_depth:
-            continue
+        t,d = q.popleft()
+        if d == max_depth: continue
         for p in _parents.get(t, ()):
-            if p in seen:
-                continue
-            seen.add(p)
-            out[p] = d + 1
-            q.append((p, d + 1))
+            if p in seen: continue
+            seen.add(p); out[p] = d+1; q.append((p, d+1))
     return out
 
-def load_embeddings(path_ids: str, path_embs: str):
-    ids  = torch.load(path_ids)
-    embs = torch.load(path_embs)
-    return ids, embs
-
-def _pooled_vector(codes: Iterable[str], term2idx: Dict[str, int], term_embs: torch.Tensor,
-                   decay: float = 0.7, max_depth: int = 2) -> torch.Tensor:
-    # Lazy init IC if needed
-    if _ic_map is None:
-        _load_ic()
-    contrib: Dict[int, float] = {}
-    for c in codes:
+def _pooled_vector(hpo_codes, term2idx, term_embs, decay=0.7, max_depth=2):
+    # weighted sum with IC × (idf**gamma)
+    acc = torch.zeros(term_embs.size(1), dtype=term_embs.dtype)
+    for c in hpo_codes:
+        w = float(_ic_map.get(c, 0.0))
+        if _idf_map is not None:
+            w *= float(_idf_map.get(c, 0.0)) ** float(_idf_gamma)
         if c in term2idx:
-            w = float(_ic_map.get(c, _default_ic))
-            contrib[term2idx[c]] = contrib.get(term2idx[c], 0.0) + w
-        # ancestors
-        for anc, dist in _ancestors(c, max_depth=max_depth).items():
+            acc += term_embs[term2idx[c]] * w
+        for anc, dist in _ancestors(c, max_depth).items():
             if anc in term2idx:
-                w = (decay ** dist) * float(_ic_map.get(anc, _default_ic))
-                idx = term2idx[anc]
-                contrib[idx] = contrib.get(idx, 0.0) + w
+                dec = (decay ** dist)
+                w_anc = float(_ic_map.get(anc, 0.0))
+                if _idf_map is not None:
+                    w_anc *= float(_idf_map.get(anc, 0.0)) ** float(_idf_gamma)
+                acc += term_embs[term2idx[anc]] * (w_anc * dec)
+    # L2 normalize
+    norm = acc.norm() + 1e-8
+    return (acc / norm).unsqueeze(0)  # [1, dim]
 
-    if not contrib:
-        raise ValueError("No terms overlapped with embedding vocabulary.")
-
-    idxs = torch.tensor(list(contrib.keys()), dtype=torch.long, device=term_embs.device)
-    w    = torch.tensor([contrib[i] for i in idxs.tolist()], dtype=term_embs.dtype, device=term_embs.device)
-    embs = term_embs[idxs]
-    return (embs * w.unsqueeze(1)).sum(dim=0) / w.sum()
-
-# ---------- public API ----------
-def embed_patient(hpo_codes: List[str],
-                  term_node_list: List[str],
-                  term_embs: torch.Tensor,
-                  neg_codes: List[str] = None,
-                  decay: float = 0.7,
-                  max_depth: int = 2,
-                  neg_alpha: float = 0.5) -> torch.Tensor:
-    # Ensure parents/IC are available (safe when imported)
-    if _ic_map is None:
-        _load_ic()
-    if _parents is None:
-        _load_parents()
-    term2idx = {t: i for i, t in enumerate(term_node_list)}
-    pos_vec = _pooled_vector(hpo_codes, term2idx, term_embs, decay=decay, max_depth=max_depth)
-
+def embed_patient(pos_codes, term_nodes, term_embs, neg_codes=None,
+                  max_depth=2, decay=0.7):
+    term2idx = {hp:i for i,hp in enumerate(term_nodes)}
+    pos_emb = _pooled_vector(pos_codes, term2idx, term_embs, decay=decay, max_depth=max_depth)
     if neg_codes:
-        try:
-            neg_vec = _pooled_vector(neg_codes, term2idx, term_embs, decay=decay, max_depth=max_depth)
-            vec = pos_vec - neg_alpha * neg_vec
-        except ValueError:
-            vec = pos_vec
+        neg_emb = _pooled_vector(neg_codes, term2idx, term_embs, decay=decay, max_depth=max_depth)
+        emb = pos_emb - 0.5 * neg_emb
     else:
-        vec = pos_vec
-    return vec.unsqueeze(0)
+        emb = pos_emb
+    return emb  # [1, dim]
 
-def rank_diseases(patient_emb: torch.Tensor, disease_ids: List[str], disease_embs: torch.Tensor, topk: int = 10):
-    """Return top-k (clamped) list of (disease_id, score)."""
-    n = int(disease_embs.size(0)) if hasattr(disease_embs, "size") else len(disease_ids)
-    if n == 0:
-        return []
-    k = max(1, min(topk, n))
+def rank_diseases(patient_emb, disease_ids, disease_embs, topk=10):
+    # cosine similarity
     pe = patient_emb / (patient_emb.norm(dim=1, keepdim=True) + 1e-8)
     de = disease_embs / (disease_embs.norm(dim=1, keepdim=True) + 1e-8)
-    sims = (pe @ de.t()).squeeze(0)
+    sims = (pe @ de.t()).squeeze(0)  # [num_diseases]
+    k = min(topk, sims.numel())
     vals, idxs = sims.topk(k, largest=True)
-    return [(disease_ids[i], float(vals[j])) for j, i in enumerate(idxs)]
+    return [(disease_ids[i], float(vals[j])) for j,i in enumerate(idxs)]
 
-# ---------- CLI ----------
-if __name__ == "__main__":
+def _import_evaluate():
+    # allows `diagnose.py` to be used stand-alone from CLI
     import argparse
     ap = argparse.ArgumentParser()
-    ap.add_argument("--obo",              default="hp.obo")
-    ap.add_argument("--term_node_list",   default="checkpoints/node_list.pt")
-    ap.add_argument("--term_embs",        default="checkpoints/hpo_gcl_embeddings.pt")
-    ap.add_argument("--disease_ids",      default="checkpoints/disease_ids.pt")
-    ap.add_argument("--disease_embs",     default="checkpoints/disease_embs.pt")
-    ap.add_argument("--patient_hpos",     required=True, help="Comma-separated HP: codes")
-    ap.add_argument("--patient_neg",      default="", help="Comma-separated negated HP: codes")
-    ap.add_argument("--topk",             type=int, default=5)
+    ap.add_argument("--obo", default="hp.obo")
+    ap.add_argument("--ic", default="checkpoints/hpo_ic.pt")
+    ap.add_argument("--idf", default=None, help="Optional path to checkpoints/hpo_idf.pt")
+    ap.add_argument("--idf_gamma", type=float, default=1.0)
+    ap.add_argument("--term_node_list", default="checkpoints/node_list.pt")
+    ap.add_argument("--term_embs", default="checkpoints/hpo_gcl_embeddings.pt")
+    ap.add_argument("--disease_ids", default="checkpoints/disease_ids.pt")
+    ap.add_argument("--disease_embs", default="checkpoints/disease_embs.pt")
+    ap.add_argument("--patient_hpos", required=True, help="Comma-separated HP:xxxxxxx list")
+    ap.add_argument("--topk", type=int, default=10)
     args = ap.parse_args()
 
-    # explicit load with provided paths
-    ensure_loaded(obo_path=args.obo, ic_path=_ic_path)
+    ensure_loaded(obo_path=args.obo, ic_path=args.ic, idf_path=args.idf, idf_gamma=args.idf_gamma)
+    term_nodes  = torch.load(args.term_node_list)
+    term_embs   = torch.load(args.term_embs)
+    disease_ids = torch.load(args.disease_ids)
+    disease_embs= torch.load(args.disease_embs)
 
-    term_nodes, term_embs   = load_embeddings(args.term_node_list, args.term_embs)
-    disease_ids, disease_em = load_embeddings(args.disease_ids,   args.disease_embs)
-
-    pos = [s.strip() for s in args.patient_hpos.split(",") if s.strip()]
-    neg = [s.strip() for s in args.patient_neg.split(",") if s.strip()]
-    emb = embed_patient(pos, term_nodes, term_embs, neg_codes=neg)
-
-    top = rank_diseases(emb, disease_ids, disease_em, topk=args.topk)
+    pos = [t.strip() for t in args.patient_hpos.split(",") if t.strip()]
+    emb = embed_patient(pos, term_nodes, term_embs, neg_codes=None, max_depth=2, decay=0.7)
+    ranked = rank_diseases(emb, disease_ids, disease_embs, topk=args.topk)
     print("Top candidate diagnoses:")
-    for did, score in top:
-        print(f"{did}\t{score:.4f}")
+    for did, sc in ranked:
+        print(f"{did:12s} {sc:8.4f}")
+
+if __name__ == "__main__":
+    _import_evaluate()

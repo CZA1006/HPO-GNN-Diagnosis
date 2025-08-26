@@ -1,24 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-evaluate.py — Batch evaluation on phenopackets.
+evaluate.py : Batch evaluation on phenopackets.
 
 Features:
   - Baseline Top-K/MRR against full candidate set
-  - Optional MONDO canonicalization (OMIM/ORPHA/DECIPHER → MONDO) for fair ID matching
+  - Optional MONDO canonicalization (OMIM/ORPHA/DECIPHER -> MONDO) for fair ID matching
   - Optional phenotype-overlap filtering (IC-aware) to shrink candidate set
-  - ROC/AUC computed on matched cases (unchanged behavior)
-
-Typical run:
-  python src/evaluate.py \
-    --phenopackets_dir phenopackets \
-    --k 5 \
-    --hpoa phenotype.hpoa \
-    --obo hp.obo \
-    --mondo mondo.obo \
-    --filter_by_overlap --filter_depth 2 \
-    --filter_min_terms 2 --filter_min_ic 2.5 --filter_keep_top 500 \
-    --report_top 5 10 50 100
+  - ROC/AUC computed on matched cases
+  - Optional IDF weighting passthrough for patient pooling via diagnose.ensure_loaded(...)
 """
 import os
 import glob
@@ -138,7 +128,7 @@ def _build_term_to_disease_index(hpoa_path: str, disease_ids: list):
     idx_by_id = {did: i for i, did in enumerate(disease_ids)}
     term2idxs = defaultdict(set)
     with open(hpoa_path, newline="") as f:
-        reader = csv.reader(f, delimiter="\t")
+        reader = csv.reader(f, delimiter="	")
         header = None
         cols = {}
         for row in reader:
@@ -225,6 +215,10 @@ def main():
     ap.add_argument("--patient_depth", type=int, default=2)
     ap.add_argument("--patient_decay", type=float, default=0.7)
 
+    # NEW: IDF passthrough for patient pooling
+    ap.add_argument("--idf", default=None, help="Optional path to checkpoints/hpo_idf.pt")
+    ap.add_argument("--idf_gamma", type=float, default=1.0, help="Exponent on IDF weight")
+
     args = ap.parse_args()
 
     # load resources
@@ -234,8 +228,8 @@ def main():
     disease_embs = torch.load(args.disease_embs)
     ic_map = torch.load(args.ic)
 
-    # ensure diagnose has IC + parents
-    diagnose.ensure_loaded(obo_path=args.obo, ic_path=args.ic)
+    # ensure diagnose has IC + parents + (optional) IDF
+    diagnose.ensure_loaded(obo_path=args.obo, ic_path=args.ic, idf_path=args.idf, idf_gamma=args.idf_gamma)
 
     cand_set = set(disease_ids)
 
@@ -261,6 +255,10 @@ def main():
     y_true, y_score = [], [] # ROC on matched
     skipped_parse = skipped_sparse = skipped_missing_did = 0
     candidate_sizes = []
+
+    # for filter recall
+    filtered_gold_kept = 0
+    filtered_gold_total = 0
 
     for fp in files:
         try:
@@ -342,6 +340,12 @@ def main():
             sub_ids  = [disease_ids[i] for i in cand_idx]
             sub_embs = disease_embs[cand_idx]
 
+            # track filter recall in raw ID space
+            if true_id in cand_set:
+                filtered_gold_total += 1
+                if true_id in sub_ids:
+                    filtered_gold_kept += 1
+
             ranked_sub = diagnose.rank_diseases(emb, sub_ids, sub_embs, topk=args.topk)
             results_filtered.append((true_id, ranked_sub))
 
@@ -382,7 +386,6 @@ def main():
         results = canonize_results(results, mondo_idx)
         if results_filtered:
             results_filtered = canonize_results(results_filtered, mondo_idx)
-        # matched based on canonical candidate universe
         matched_results = [(y, r) for (y, r) in results if y in cand_set_canon]
     else:
         matched_results = [(y, r) for (y, r) in results if y in cand_set]
@@ -401,7 +404,6 @@ def main():
     report("Matched", matched_results, args.report_top)
 
     if results_filtered:
-        # matched set for filtered is approximate (uses global candidate universe)
         if mondo_idx is not None:
             matched_results_f = [(y, r) for (y, r) in results_filtered if y in cand_set_canon]
         else:
@@ -413,6 +415,10 @@ def main():
         if candidate_sizes:
             print(f"[INFO] Mean filtered candidate size: {np.mean(candidate_sizes):.1f} "
                   f"(median {np.median(candidate_sizes):.0f})")
+        if filtered_gold_total:
+            pct = 100.0 * filtered_gold_kept / filtered_gold_total
+            print(f"[INFO] Filter recall (gold kept after filtering): "
+                  f"{filtered_gold_kept}/{filtered_gold_total} ({pct:.1f}%)")
 
     print(f"[DEBUG] Skipped {skipped_sparse} sparse cases (<{args.min_hpo} HPOs)")
     print(f"[DEBUG] Skipped {skipped_missing_did} cases with missing disease ID")
