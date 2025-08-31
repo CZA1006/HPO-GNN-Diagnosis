@@ -176,3 +176,14 @@ This configuration:
 - Train **TSDAE** for 3–5 epochs and **GCL** for 200–400 epochs.
 - Use richer patient phenotypes (≥3–5 informative HPOs) when available.
 - Tune `--filter_*` until candidate size is a few hundred **without** dropping the gold label.
+
+## Results — ROC Curve
+
+The ROC curve below summarizes retrieval performance under the current hybrid configuration
+(e.g., `alpha=0.90`, `beta=0.10`, `patient_depth=2`, `patient_decay=0.7`, `filter_depth=2`).
+Replace this sentence with the exact hyperparameters and AUC you want to highlight.
+
+![ROC curve — hybrid scorer](Figure_10.png)
+
+<sub>*Figure 10.* ROC curve of the hybrid ranker on the Phenopackets evaluation set.
+Generated via `src/evaluate_hybrid.py`.</sub>
