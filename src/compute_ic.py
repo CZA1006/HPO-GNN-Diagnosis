@@ -11,6 +11,9 @@ Outputs:
   checkpoints/hpo_ic.pt  (dict[str, float] like {"HP:0000001": 3.14, ...})
 """
 
+# 计算所有HP疾病的IC数值，IC越高，HPO 术语越“稀有/更具信息量”，它在你们管线里的“话语权”就越大，
+# 共享这些高 IC 术语的病人和疾病会更强地互相靠近；反之，若病人把某高 IC 术语标为否定，和含该术语的疾病会被更强地拉远
+
 import os
 import csv
 import math

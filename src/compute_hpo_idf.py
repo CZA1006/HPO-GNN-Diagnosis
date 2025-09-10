@@ -3,6 +3,7 @@
 """
 compute_hpo_idf.py
 Build HPO -> IDF (rarer terms get larger weights) from phenotype.hpoa.
+压低“到处都有的常见表型”，抬高“跨疾病稀有、最能区分的表型”，让相似度和排序更有判别力
 
 Saves:
   checkpoints/hpo_df.pt   # { "HP:xxxxxxx": int df }
