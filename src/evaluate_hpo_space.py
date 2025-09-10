@@ -1,352 +1,570 @@
+
 #!/usr/bin/env python3
 """
-HPO-space baseline (Task 1b)
-- Represents diseases and patients as sparse HPO vectors (optionally incl. ancestors)
-- Supports weighting: binary | ic | idf | icidf  (with --idf_gamma)
-- Same overlap filtering knobs you already use (depth/min_terms/min_ic/keep_top)
-- Reports Overall/Matched Top-K & MRR and plots a ROC curve.
+evaluate_hpo_space.py
 
-Usage (example):
-python src/evaluate_hpo_space.py \
-  --phenopackets_dir phenopackets \
-  --hpoa phenotype.hpoa --obo hp.obo \
-  --ic checkpoints/hpo_ic.pt \
-  --idf checkpoints/hpo_idf.pt --idf_gamma 1.0 \
-  --weight_mode icidf \
-  --filter_by_overlap --filter_depth 2 \
-  --filter_min_terms 2 --filter_min_ic 2.6 --filter_keep_top 500 \
-  --patient_depth 2 --patient_decay 0.7 \
-  --roc_negatives 300 \
-  --report_top 5 10 50 100 \
-  --roc_out results/Figure_hpo_space.png
+Baseline evaluation in HPO-space (no GNN). Diseases are represented by their HPO
+annotation sets (from phenotype.hpoa). A patient is represented by their HPOs
+(from phenopackets). Optional ancestor propagation with depth/decay can be applied.
+Similarity is computed as a weighted overlap between patient and disease terms.
+
+Weights support:
+  - uniform: 1.0 for each term
+  - ic: IC(term)
+  - idf: IDF(term)^gamma
+  - icidf: IC(term) * IDF(term)^gamma
+
+Filtering (optional):
+  - Keep only diseases with at least FILTER_MIN_TERMS overlapping terms (after propagation),
+    and total IC sum over the intersection >= FILTER_MIN_IC, then keep top FILTER_KEEP_TOP
+    candidates by overlap count.
+
+Evaluation reports:
+  - Top-k accuracy and MRR for user-selected K values (e.g., 5 10 50 100)
+  - ROC/AUC by pooling positives/negatives across cases (negatives are sampled among
+    the scored candidates per case). A PNG can be saved with --roc_out.
+
+This script is self-contained and does not require model checkpoints beyond
+IC/IDF maps (torch-saved dicts) and the HPOA file.
 """
-import argparse, json, os, random, math, re, collections, time
-from typing import Dict, Set, List, Tuple
+import argparse
+import json
+import os
+import random
+import sys
+from collections import defaultdict, Counter
+from typing import Dict, List, Set, Tuple
+
 import numpy as np
 import torch
 import matplotlib.pyplot as plt
 
-# ---------- small OBO parser (id -> name, parents) ----------
-def load_obo(path:str):
-    name = {}
-    parents = collections.defaultdict(set)
-    cur = None
-    with open(path, 'r', encoding='utf-8', errors='ignore') as f:
-        for line in f:
-            line=line.rstrip()
-            if line == "[Term]":
-                cur = {}
-            elif not line and cur:
-                if 'id' in cur:
-                    tid = cur['id']
-                    if 'name' in cur: name[tid]=cur['name']
-                    for p in cur.get('is_a', []):
-                        parents[tid].add(p)
-                cur = None
-            elif cur is not None:
-                if line.startswith("id: "):
-                    cur['id'] = line[4:].strip()
-                elif line.startswith("name: "):
-                    cur['name'] = line[6:].strip()
-                elif line.startswith("is_a: "):
-                    pid = line[6:].split(' ! ')[0].strip()
-                    cur.setdefault('is_a', []).append(pid)
-        # flush last
-        if cur and 'id' in cur:
-            tid = cur['id']
-            if 'name' in cur: name[tid]=cur['name']
-            for p in cur.get('is_a', []):
-                parents[tid].add(p)
-    return name, parents
 
-def ancestors(term:str, parents:Dict[str,Set[str]], max_depth:int) -> Set[str]:
-    out=set()
-    frontier=[(term,0)]
-    seen=set([term])
-    while frontier:
-        t,d=frontier.pop(0)
-        if d>=max_depth: 
-            continue
-        for p in parents.get(t, ()):
-            if p not in seen:
-                seen.add(p); out.add(p)
-                frontier.append((p,d+1))
-    return out
+# -----------------------------
+# OBO parsing (HPO ancestor DAG)
+# -----------------------------
 
-# ---------- read HPOA: disease -> set of HPOs (no NOT) ----------
-def load_hpoa(path:str) -> Dict[str, Set[str]]:
-    mapping=collections.defaultdict(set)
-    with open(path,'r',encoding='utf-8',errors='ignore') as f:
+def parse_obo_parents(obo_path: str) -> Dict[str, List[str]]:
+    """
+    Parse an OBO file and return a mapping term -> list of parents (is_a).
+    Only parses [Term] stanzas with 'id:' and 'is_a:'.
+    """
+    parents: Dict[str, List[str]] = defaultdict(list)
+    if not obo_path or not os.path.exists(obo_path):
+        return parents
+
+    with open(obo_path, 'r', encoding='utf-8') as f:
+        term_id = None
+        in_term = False
         for line in f:
-            if not line or line.startswith('#'): continue
-            # HPOA is tab-separated; columns documented by Monarch
-            cols=line.rstrip('\n').split('\t')
-            if len(cols) < 5: continue
-            disease_id = cols[0].strip()  # database_id (e.g., OMIM:123)
-            qual = cols[2].strip()
-            hpo_id = cols[3].strip()
-            if qual == 'NOT': 
+            line = line.strip()
+            if line == '[Term]':
+                in_term = True
+                term_id = None
                 continue
-            if hpo_id:
-                mapping[disease_id].add(hpo_id)
-    return dict(mapping)
+            if line == '' and in_term:
+                in_term = False
+                term_id = None
+                continue
+            if not in_term:
+                continue
 
-# ---------- phenopacket utilities ----------
-def read_patient(file_path:str) -> Tuple[str, List[str]]:
-    """returns (gold_disease_id or None, list of positive HPO ids)"""
-    with open(file_path,'r',encoding='utf-8') as f:
-        data=json.load(f)
-    # HPOs
-    hpos=[]
-    for feat in data.get('phenotypicFeatures', []):
-        if feat.get('excluded', False): 
+            if line.startswith('id: '):
+                term_id = line.split('id: ')[1].strip()
+            elif line.startswith('is_a: ') and term_id:
+                # Example: is_a: HP:0000118 ! Phenotypic abnormality
+                parent = line.split('is_a: ')[1].split('!')[0].strip()
+                parents[term_id].append(parent)
+    return parents
+
+
+def ancestors_within_depth(code: str, parents: Dict[str, List[str]], depth: int) -> Set[str]:
+    """
+    Return the set of ancestors up to 'depth' steps (1 step = direct parent).
+    Includes the code itself (depth >= 0).
+    """
+    if depth <= 0:
+        return {code}
+    result = {code}
+    frontier = {code}
+    for _ in range(depth):
+        next_frontier = set()
+        for t in frontier:
+            for p in parents.get(t, []):
+                if p not in result:
+                    result.add(p)
+                    next_frontier.add(p)
+        if not next_frontier:
+            break
+        frontier = next_frontier
+    return result
+
+
+# -----------------------------
+# Phenopacket & HPOA utilities
+# -----------------------------
+
+def load_phenopacket(path: str) -> Tuple[Set[str], str]:
+    """
+    Parse a GA4GH Phenopacket JSON. Returns (positive_hpo_codes, gold_disease_id_or_None).
+    Tries several common locations for disease IDs.
+    """
+    with open(path, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+
+    # Collect positive HPOs (skip negated)
+    hpos = set()
+    feats = data.get('phenotypicFeatures') or data.get('phenotypic_features') or []
+    for feat in feats:
+        if feat.get('negated'):
             continue
-        t = feat.get('type') or {}
-        hid = t.get('id')
-        if hid: hpos.append(hid)
-    # disease gold
-    gold=None
-    for dz in data.get('diseases', []):
-        term = dz.get('term',{}) or dz.get('diseaseCode',{})
-        cand = term.get('id') or term.get('code')
-        if cand:
-            gold=cand; break
-    return gold, hpos
+        t = feat.get('type') or feat.get('term') or {}
+        cid = t.get('id') or t.get('code')
+        if cid and cid.startswith('HP:'):
+            hpos.add(cid)
 
-# ---------- vectorization ----------
-def expand_with_ancestors(ids:List[str], parents, depth:int) -> Set[str]:
-    out=set(ids)
-    if depth>0:
-        for h in ids:
-            out |= ancestors(h, parents, depth)
+    # Try to find a gold disease ID
+    gold = None
+
+    # 1) diseases[]
+    diseases = data.get('diseases') or []
+    for d in diseases:
+        term = d.get('term') or {}
+        did = term.get('id')
+        if not did:
+            did = d.get('disease') or d.get('id')
+        if isinstance(did, str) and (did.startswith('OMIM:') or did.startswith('ORPHA:') or did.startswith('DECIPHER:') or did.upper().startswith('MONDO:')):
+            gold = did
+            break
+
+    # 2) interpretations[]
+    if gold is None:
+        interps = data.get('interpretations') or []
+        for it in interps:
+            dx = it.get('diagnosis') or {}
+            dis = dx.get('disease') or {}
+            term = dis.get('term') or {}
+            did = term.get('id') or dis.get('id')
+            if isinstance(did, str) and (did.startswith('OMIM:') or did.startswith('ORPHA:') or did.startswith('DECIPHER:') or did.upper().startswith('MONDO:')):
+                gold = did
+                break
+
+    return hpos, gold
+
+
+def iter_phenopackets(pp_dir: str) -> List[Tuple[str, Set[str], str]]:
+    """
+    Walk a directory and yield (filename, hpo_set, gold_disease_id_or_None) for .json files.
+    """
+    out = []
+    for root, _, files in os.walk(pp_dir):
+        for fn in files:
+            if fn.lower().endswith('.json'):
+                path = os.path.join(root, fn)
+                try:
+                    hpos, gold = load_phenopacket(path)
+                    out.append((path, hpos, gold))
+                except Exception as e:
+                    print(f"[WARN] Failed to parse {path}: {e}", file=sys.stderr)
     return out
 
-def build_weight_map(id_set:Set[str], ic_map, idf_map, gamma:float, mode:str,
-                     depth:int, parents, decay:float) -> Dict[str,float]:
-    """Return weighted sparse vector w[id]=weight; ancestors added with geometric decay^dist."""
-    # BFS with depth & decay
-    dist = {hid:0 for hid in id_set}
-    frontier=list(id_set)
-    seen=set(id_set)
-    while frontier:
-        cur=frontier.pop(0)
-        d=dist[cur]
-        if d>=depth: 
-            continue
-        for p in parents.get(cur,()):
-            if p not in seen:
-                seen.add(p)
-                dist[p]=d+1
-                frontier.append(p)
-    # assign weights
-    w={}
-    for hid, d in dist.items():
-        base = 1.0
-        if mode in ('ic','icidf'):
-            base *= float(ic_map.get(hid, 0.0))
-        if mode in ('idf','icidf'):
-            base *= (1.0 + gamma*float(idf_map.get(hid, 0.0)))
-        # if purely binary requested
-        if mode == 'binary':
-            base = 1.0
-        if d>0:
-            base *= (decay ** d)
-        if base>0.0:
-            w[hid]=w.get(hid,0.0)+base
+
+def load_hpoa(hpoa_path: str) -> Dict[str, Set[str]]:
+    """
+    Load phenotype.hpoa (tab-separated). Returns mapping disease_id -> set(HPO).
+    Skips NOT qualifiers and comment lines.
+    Columns (HPOA v2.3 typical): database_id, disease_name, qualifier, hpo_id, ...
+    """
+    mapping: Dict[str, Set[str]] = defaultdict(set)
+    if not hpoa_path or not os.path.exists(hpoa_path):
+        return mapping
+    with open(hpoa_path, 'r', encoding='utf-8') as f:
+        for line in f:
+            if not line or line.startswith('#'):
+                continue
+            parts = line.rstrip('\n').split('\t')
+            if len(parts) < 5:
+                continue
+            disease_id = parts[0].strip()
+            qualifier = parts[2].strip()
+            hpo_id = parts[4].strip()
+            if qualifier.upper() == 'NOT':
+                continue
+            if hpo_id.startswith('HP:'):
+                mapping[disease_id].add(hpo_id)
+    return mapping
+
+
+# -----------------------------
+# Weights and scoring
+# -----------------------------
+
+def build_weight_map(codes: Set[str],
+                     ic_map: Dict[str, float],
+                     idf_map: Dict[str, float],
+                     idf_gamma: float,
+                     weight_mode: str) -> Dict[str, float]:
+    """
+    Assign a weight per code according to weight_mode.
+    """
+    w = {}
+    for c in codes:
+        ic = float(ic_map.get(c, 0.0))
+        idf = float(idf_map.get(c, 0.0))
+        if weight_mode == 'uniform':
+            val = 1.0
+        elif weight_mode == 'ic':
+            val = ic
+        elif weight_mode == 'idf':
+            # If idf is 0.0, keep it at 0.0 (rare terms have larger idf in most conventions).
+            val = (idf ** idf_gamma) if idf_gamma != 0 else 1.0
+        elif weight_mode == 'icidf':
+            base = ic
+            mult = (idf ** idf_gamma) if idf_gamma != 0 else 1.0
+            val = base * mult
+        else:
+            val = 1.0
+        if val != 0.0:
+            w[c] = val
     return w
 
-def cosine_sparse(a:Dict[str,float], b:Dict[str,float]) -> float:
-    if not a or not b: return 0.0
-    # dot
-    dot=0.0
-    # iterate smaller
-    (small, large) = (a,b) if len(a)<len(b) else (b,a)
-    for k,v in small.items():
-        if k in large:
-            dot += v*large[k]
-    if dot==0.0: return 0.0
-    na = math.sqrt(sum(v*v for v in a.values()))
-    nb = math.sqrt(sum(v*v for v in b.values()))
-    if na==0 or nb==0: return 0.0
-    return dot/(na*nb)
 
-# ---------- metrics ----------
-def topk_and_mrr(ranks:List[int], ks:List[int]) -> Tuple[Dict[int,float], float]:
-    # ranks: 1-based rank of gold if found, else None/inf
-    mrr_vals=[]
-    topk = {k:0 for k in ks}
-    for r in ranks:
-        if r is None: 
+def propagate_codes_with_decay(codes: Set[str],
+                               parents: Dict[str, List[str]],
+                               depth: int,
+                               decay: float) -> Dict[str, float]:
+    """
+    Expand term weights to ancestors up to 'depth', with multiplicative decay per level.
+    Returns a dict code -> accumulated weight (start with 1.0 for self).
+    """
+    weights: Dict[str, float] = defaultdict(float)
+    for c in codes:
+        weights[c] += 1.0  # self
+        if depth <= 0:
             continue
-        mrr_vals.append(1.0/r)
-        for k in ks:
-            if r<=k: topk[k]+=1
-    N=len(ranks)
-    topk={k:(topk[k]/N if N else 0.0) for k in ks}
-    mrr=(sum(mrr_vals)/N) if N else 0.0
-    return topk, mrr
+        frontier = {c}
+        current_weight = 1.0
+        for _ in range(depth):
+            current_weight *= decay
+            next_frontier = set()
+            for t in frontier:
+                for p in parents.get(t, []):
+                    weights[p] += current_weight
+                    next_frontier.add(p)
+            if not next_frontier:
+                break
+            frontier = next_frontier
+    return dict(weights)
 
-def roc_curve_and_auc(scores:List[float], labels:List[int]):
-    # sort by score descending
-    order = np.argsort(-np.array(scores))
-    y = np.array(labels)[order]
-    tp = np.cumsum(y==1)
-    fp = np.cumsum(y==0)
-    P = tp[-1] if len(tp)>0 else 0
-    N = fp[-1] if len(fp)>0 else 0
-    tpr = (tp / P) if P>0 else np.zeros_like(tp, dtype=float)
-    fpr = (fp / N) if N>0 else np.zeros_like(fp, dtype=float)
+
+def weighted_overlap_score(patient_w: Dict[str, float],
+                           disease_w: Dict[str, float],
+                           term_weight_map: Dict[str, float]) -> float:
+    """
+    Score = sum_{t in intersection} (patient_weight(t) * disease_weight(t) * term_weight(t))
+    where term_weight(t) is from IC/IDF scheme; patient_weight/disease_weight are from propagation.
+    """
+    s = 0.0
+    if len(patient_w) < len(disease_w):
+        it = (t for t in patient_w.keys() if t in disease_w and t in term_weight_map)
+    else:
+        it = (t for t in disease_w.keys() if t in patient_w and t in term_weight_map)
+    for t in it:
+        s += patient_w[t] * disease_w[t] * term_weight_map[t]
+    return s
+
+
+# -----------------------------
+# Metrics
+# -----------------------------
+
+def ranks_and_hits(scores: List[Tuple[str, float]], gold_id: str) -> Tuple[int, float]:
+    """
+    Returns (rank, score_of_gold) where rank starts at 1 for best.
+    If gold not present, returns (-1, 0.0).
+    """
+    score_by_id = dict(scores)
+    if gold_id not in score_by_id:
+        return -1, 0.0
+    gold_score = score_by_id[gold_id]
+    # Rank: number of strictly higher scores + 1 (ties give worst-rank within tie)
+    better = sum(1 for _, s in scores if s > gold_score)
+    rank = better + 1
+    return rank, gold_score
+
+
+def topk_and_mrr(all_ranks: List[int], ks: List[int]) -> Tuple[Dict[int, float], float]:
+    """
+    From a list of per-case ranks (-1 if missing), compute top-k accuracies and MRR.
+    'overall' style: include missing (count as failure). Caller can compute 'matched' separately.
+    """
+    n = len(all_ranks)
+    top = {}
+    for k in ks:
+        hits = sum(1 for r in all_ranks if r != -1 and r <= k)
+        top[k] = hits / max(1, n)
+    # MRR
+    rr = [1.0 / r for r in all_ranks if r != -1]
+    mrr = (sum(rr) / max(1, n)) if rr else 0.0
+    return top, mrr
+
+
+def mann_whitney_auc(pos: List[float], neg: List[float]) -> float:
+    """
+    AUC via Mann-Whitney statistic: proportion that a random positive > random negative.
+    """
+    if not pos or not neg:
+        return 0.0
+    # Rank all together
+    y = np.concatenate([np.array(pos), np.array(neg)])
+    order = np.argsort(y, kind='mergesort')  # stable
+    ranks = np.empty_like(order, dtype=float)
+    ranks[order] = np.arange(1, len(y) + 1, dtype=float)
+    n_pos = len(pos)
+    rank_sum_pos = ranks[:n_pos].sum()
+    auc = (rank_sum_pos - n_pos * (n_pos + 1) / 2.0) / (n_pos * len(neg))
+    return float(auc)
+
+
+def make_roc_curve(pos: List[float], neg: List[float], num_thresh: int = 256) -> Tuple[np.ndarray, np.ndarray, float]:
+    """
+    Approximate ROC by sweeping 'num_thresh' quantile thresholds.
+    """
+    if not pos or not neg:
+        return np.array([0.0, 1.0]), np.array([0.0, 1.0]), 0.0
+
+    all_scores = np.concatenate([np.array(pos), np.array(neg)])
+    # Use quantile thresholds for efficiency
+    qs = np.linspace(0.0, 1.0, num_thresh)
+    thresh = np.quantile(all_scores, qs)
+
+    pos_arr = np.array(pos)
+    neg_arr = np.array(neg)
+
+    tpr = []
+    fpr = []
+    for t in thresh[::-1]:  # high to low
+        tp = (pos_arr >= t).sum()
+        fp = (neg_arr >= t).sum()
+        tpr.append(tp / max(1, len(pos_arr)))
+        fpr.append(fp / max(1, len(neg_arr)))
+
+    # Ensure (0,0) and (1,1) endpoints exist
+    tpr = np.array([0.0] + tpr + [1.0])
+    fpr = np.array([0.0] + fpr + [1.0])
+
     # AUC via trapezoid
-    auc = np.trapz(tpr, fpr) if len(tpr)>1 else 0.0
-    return fpr, tpr, float(auc)
+    auc = float(np.trapz(tpr, fpr))
+    return fpr, tpr, auc
 
-# ---------- main ----------
+
+# -----------------------------
+# Main
+# -----------------------------
+
 def main():
-    p=argparse.ArgumentParser()
-    p.add_argument('--phenopackets_dir', default='phenopackets')
-    p.add_argument('--hpoa', required=True)
-    p.add_argument('--obo', required=True)
-    p.add_argument('--ic', default=None)
-    p.add_argument('--idf', default=None)
-    p.add_argument('--idf_gamma', type=float, default=1.0)
-    p.add_argument('--weight_mode', choices=['binary','ic','idf','icidf'], default='icidf')
+    p = argparse.ArgumentParser()
+    p.add_argument('--phenopackets_dir', type=str, default='phenopackets')
+    p.add_argument('--hpoa', type=str, required=True, help='phenotype.hpoa')
+    p.add_argument('--obo', type=str, required=True, help='hp.obo (HPO)')
+    p.add_argument('--mondo', type=str, default=None, help='mondo.obo (unused here, accepted for parity)')
 
-    # filtering
+    p.add_argument('--ic', type=str, default=None, help='torch-saved dict: {HP: IC}')
+    p.add_argument('--idf', type=str, default=None, help='torch-saved dict: {HP: IDF}')
+    p.add_argument('--idf_gamma', type=float, default=1.0)
+
+    p.add_argument('--weight_mode', type=str, default='icidf', choices=['uniform', 'ic', 'idf', 'icidf'])
+
+    # Filtering options
     p.add_argument('--filter_by_overlap', action='store_true')
-    p.add_argument('--filter_depth', type=int, default=2)
-    p.add_argument('--filter_min_terms', type=int, default=2)
+    p.add_argument('--filter_depth', type=int, default=1)
+    p.add_argument('--filter_min_terms', type=int, default=1)
     p.add_argument('--filter_min_ic', type=float, default=0.0)
     p.add_argument('--filter_keep_top', type=int, default=1000)
 
-    # patient expansion
-    p.add_argument('--patient_depth', type=int, default=2)
+    # Patient expansion
+    p.add_argument('--patient_depth', type=int, default=1)
     p.add_argument('--patient_decay', type=float, default=0.7)
 
-    # evaluation
-    p.add_argument('--report_top', nargs='+', type=int, default=[5,10,50,100])
-    p.add_argument('--roc_negatives', type=int, default=300)
-    p.add_argument('--roc_out', default='Figure_hpo_space.png')
-    args=p.parse_args()
+    # Evaluation
+    p.add_argument('--k', type=int, default=5)
+    p.add_argument('--report_top', type=int, nargs='+', default=[5, 10, 50, 100])
+    p.add_argument('--min_hpo', type=int, default=2)
 
-    t0=time.time()
-    name_map, parents = load_obo(args.obo)
-    disease_hpos = load_hpoa(args.hpoa)
+    # ROC
+    p.add_argument('--roc_negatives', type=int, default=300)
+    p.add_argument('--roc_out', type=str, default=None)
+
+    args = p.parse_args()
+
+    # Load resources
     ic_map = torch.load(args.ic) if args.ic and os.path.exists(args.ic) else {}
     idf_map = torch.load(args.idf) if args.idf and os.path.exists(args.idf) else {}
 
-    # precompute disease vectors (patient-style depth/decay to keep symmetry)
-    dz_vectors={}
-    dz_sets_for_filter={}
-    for dz, hset in disease_hpos.items():
-        # for filtering we only need presence (depth=filter_depth)
-        fset = expand_with_ancestors(list(hset), parents, args.filter_depth)
-        dz_sets_for_filter[dz]=fset|set(hset)
-        # for similarity, patient_depth/decay to mirror patient settings
-        dz_vectors[dz]=build_weight_map(set(hset), ic_map, idf_map, args.idf_gamma, 
-                                        args.weight_mode, args.patient_depth, parents, args.patient_decay)
+    parents = parse_obo_parents(args.obo)
+    disease2hpo = load_hpoa(args.hpoa)
+    packets = iter_phenopackets(args.phenopackets_dir)
 
-    # load patients
-    files=[os.path.join(args.phenopackets_dir,f) for f in os.listdir(args.phenopackets_dir) if f.endswith('.json')]
-    files.sort()
+    if not packets:
+        print("[ERROR] No phenopackets found.")
+        sys.exit(1)
 
-    overall_ranks=[]
-    matched_ranks=[]
-    roc_scores=[]
-    roc_labels=[]
-    gold_not_present=0
+    # Precompute disease expanded weights (for filtering and scoring)
+    # We propagate each disease's HPO set using the same depth as patient_depth,
+    # but you can change this to args.filter_depth if you want to use a different
+    # expansion for the filter stage.
+    disease_expanded_cache: Dict[str, Dict[str, float]] = {}
+    for did, hpos in disease2hpo.items():
+        disease_expanded_cache[did] = propagate_codes_with_decay(hpos, parents, args.patient_depth, args.patient_decay)
 
-    for fp in files:
-        gold, patient_hpos = read_patient(fp)
-        if not patient_hpos: 
+    ks = sorted(set(args.report_top + [args.k]))
+
+    overall_ranks: List[int] = []
+    matched_ranks: List[int] = []
+
+    pos_scores_pool: List[float] = []
+    neg_scores_pool: List[float] = []
+
+    sparse_skips = 0
+    gold_missing = 0
+
+    # Precompute term weights universe to avoid recomputing per case? No,
+    # term weights depend on the set of terms considered (patient expansion).
+    # We'll compute per patient for accuracy.
+    eval_count = 0
+
+    for path, patient_hpos, gold in packets:
+        if len(patient_hpos) < args.min_hpo:
+            sparse_skips += 1
             continue
 
-        # patient vector
-        p_vec=build_weight_map(set(patient_hpos), ic_map, idf_map, args.idf_gamma,
-                               args.weight_mode, args.patient_depth, parents, args.patient_decay)
+        # Patient expanded with decay
+        p_expanded = propagate_codes_with_decay(patient_hpos, parents, args.patient_depth, args.patient_decay)
+        # Build term-weight (IC/IDF) map ONLY for terms seen in patient or diseases (intersection later)
+        # But simpler: build for all observed HPO codes in patient expansion to speed dictionary checks.
+        term_weight_map = build_weight_map(set(p_expanded.keys()), ic_map, idf_map, args.idf_gamma, args.weight_mode)
 
-        # candidate filtering
-        candidates=list(disease_hpos.keys())
+        # Candidate diseases
+        candidates = list(disease2hpo.keys())
+
+        # Optional phenotype-overlap filtering
         if args.filter_by_overlap:
-            p_filter_set = expand_with_ancestors(patient_hpos, parents, args.filter_depth) | set(patient_hpos)
-            # IC overlap score to prioritize
-            scored=[]
-            for dz in candidates:
-                overlap = p_filter_set & dz_sets_for_filter[dz]
-                if len(overlap) < args.filter_min_terms:
+            filt_scores = []
+            for did in candidates:
+                d_expanded = disease_expanded_cache[did]
+
+                # raw overlap set (unweighted) for gatekeeping
+                inter = set(p_expanded.keys()).intersection(d_expanded.keys())
+                if not inter:
                     continue
-                ic_sum = sum(float(ic_map.get(h,0.0)) for h in overlap)
-                if ic_sum < args.filter_min_ic:
-                    continue
-                scored.append((ic_sum, dz))
-            if not scored:
-                # if nothing passes, fall back to all
-                pass
-            else:
-                scored.sort(reverse=True)
-                keepN = min(args.filter_keep_top, len(scored))
-                candidates = [dz for _,dz in scored[:keepN]]
 
-        # similarities
-        sims=[]
-        for dz in candidates:
-            s = cosine_sparse(p_vec, dz_vectors[dz])
-            sims.append((s,dz))
-        sims.sort(reverse=True, key=lambda x:x[0])
+                # Count and IC sum for filtering thresholds
+                overlap_cnt = len(inter)
+                ic_sum = sum(float(ic_map.get(t, 0.0)) for t in inter)
 
-        # rank
-        rank=None
-        if gold not in disease_hpos:
-            gold_not_present+=1
+                if overlap_cnt >= args.filter_min_terms and ic_sum >= args.filter_min_ic:
+                    filt_scores.append((did, overlap_cnt))
+
+            # Keep top-N by overlap count
+            filt_scores.sort(key=lambda x: x[1], reverse=True)
+            candidates = [d for d, _ in filt_scores[: args.filter_keep_top]]
+            if not candidates:
+                # No overlap; fall back to all diseases to allow a score (very rare)
+                candidates = list(disease2hpo.keys())
+
+        # Score all candidates
+        scored: List[Tuple[str, float]] = []
+        p_terms = set(p_expanded.keys())
+        for did in candidates:
+            d_expanded = disease_expanded_cache[did]
+            # Limit per-term weight map to terms that could intersect (optional)
+            # Compute final weighted overlap
+            s = weighted_overlap_score(p_expanded, d_expanded, term_weight_map)
+            if s != 0.0:
+                scored.append((did, float(s)))
+
+        # If everything is zero, keep zeros too for ranking determinism
+        if not scored:
+            scored = [(did, 0.0) for did in candidates]
+
+        # Rank (descending)
+        scored.sort(key=lambda x: x[1], reverse=True)
+        eval_count += 1
+
+        # Rank of gold
+        r, gold_score = ranks_and_hits(scored, gold) if gold else (-1, 0.0)
+        overall_ranks.append(r)
+        if r != -1:
+            matched_ranks.append(r)
         else:
-            for i,(_,dz) in enumerate(sims, start=1):
-                if dz==gold:
-                    rank=i; break
+            gold_missing += 1
 
-        overall_ranks.append(rank)
-        if gold in candidates:
-            matched_ranks.append(rank)
-        else:
-            matched_ranks.append(None)
+        # Negatives for ROC
+        if r != -1 and args.roc_negatives > 0:
+            # Choose negatives from the scored IDs (so lookups can't fail)
+            scored_ids = [d for d, _ in scored if d != gold]
+            n_neg = min(args.roc_negatives, len(scored_ids))
+            if n_neg > 0:
+                neg_samps = random.sample(scored_ids, n_neg)
+                score_by_id = dict(scored)
+                neg_vals = [score_by_id[d] for d in neg_samps]
+                pos_scores_pool.append(gold_score)
+                neg_scores_pool.extend(neg_vals)
 
-        # ROC: positive + sampled negatives
-        if gold in disease_hpos:
-            pos = cosine_sparse(p_vec, dz_vectors[gold])
-            roc_scores.append(pos); roc_labels.append(1)
-            # negatives from all diseases (exclude gold)
-            pool=[dz for dz in disease_hpos.keys() if dz!=gold]
-            random.shuffle(pool)
-            for dz in pool[:args.roc_negatives]:
-                roc_scores.append(cosine_sparse(p_vec, dz_vectors[dz]))
-                roc_labels.append(0)
+    # Reporting
+    def print_report(group_name: str, ranks: List[int]):
+        if not ranks:
+            print(f"== {group_name} ==\nNo cases.\n")
+            return
+        top, mrr = topk_and_mrr(ranks, ks)
+        print(f"== {group_name} ==")
+        for k in ks:
+            print(f"Overall Top-{k}: {top[k]:.4f}")
+        print(f"Overall MRR: {mrr:.4f}")
+        print()
 
-    ks = args.report_top
-    overall_topk, overall_mrr = topk_and_mrr(overall_ranks, ks)
-    matched_topk, matched_mrr = topk_and_mrr(matched_ranks, ks)
+    print(f"Evaluated {eval_count} cases")
+    print(f"Gold not present in candidates: {gold_missing}")
 
-    print(f"Evaluated {len(overall_ranks)} cases")
-    print(f"Gold not present in candidates: {gold_not_present}")
     print("== HPO-space baseline ==")
+    # Overall (includes missing as failures)
+    top_overall, mrr_overall = topk_and_mrr(overall_ranks, ks)
     for k in ks:
-        print(f"Overall Top-{k}: {overall_topk[k]:.4f}")
-    print(f"Overall MRR: {overall_mrr:.4f}")
-    for k in ks:
-        print(f"Matched Top-{k}: {matched_topk[k]:.4f}")
-    print(f"Matched MRR: {matched_mrr:.4f}")
+        print(f"Overall Top-{k}: {top_overall[k]:.4f}")
+    print(f"Overall MRR: {mrr_overall:.4f}")
 
-    # ROC
-    if roc_scores:
-        fpr,tpr,auc = roc_curve_and_auc(roc_scores, roc_labels)
-        plt.figure(figsize=(5,5))
-        plt.plot(fpr,tpr,label=f"AUC = {auc:.3f}")
-        plt.plot([0,1],[0,1],'--')
-        plt.xlabel('False Positive Rate'); plt.ylabel('True Positive Rate')
-        plt.title('ROC Curve')
-        plt.legend(loc='lower right')
-        out=args.roc_out or 'Figure_hpo_space.png'
-        os.makedirs(os.path.dirname(out) or '.', exist_ok=True)
-        plt.savefig(out,bbox_inches='tight',dpi=140)
-        print(f"[ROC] Saved to {out}")
-    print(f"[Done] {time.time()-t0:.1f}s")
+    # Matched only
+    matched_only = [r for r in overall_ranks if r != -1]
+    if matched_only:
+        top_matched, mrr_matched = topk_and_mrr(matched_only, ks)
+        for k in ks:
+            print(f"Matched Top-{k}: {top_matched[k]:.4f}")
+        print(f"Matched MRR: {mrr_matched:.4f}")
+    else:
+        print("Matched Top-K/MRR: N/A (no matched cases)")
 
-if __name__=="__main__":
+    # ROC/AUC
+    if pos_scores_pool and neg_scores_pool:
+        fpr, tpr, auc_trap = make_roc_curve(pos_scores_pool, neg_scores_pool, num_thresh=256)
+        auc_mw = mann_whitney_auc(pos_scores_pool, neg_scores_pool)
+        print(f"[ROC] Pooled AUC (trapz): {auc_trap:.4f} | (Mann-Whitney): {auc_mw:.4f}")
+        if args.roc_out:
+            os.makedirs(os.path.dirname(args.roc_out), exist_ok=True)
+            plt.figure()
+            plt.plot(fpr, tpr, label=f"AUC={auc_trap:.3f}")
+            plt.plot([0, 1], [0, 1], linestyle='--')
+            plt.xlabel("False Positive Rate")
+            plt.ylabel("True Positive Rate")
+            plt.legend()
+            plt.tight_layout()
+            plt.savefig(args.roc_out, dpi=180)
+            plt.close()
+            print(f"[Saved ROC] {args.roc_out}")
+    else:
+        print("[ROC] Not enough positives/negatives to compute ROC/AUC.")
+
+    print(f"[Done]")
+
+
+if __name__ == '__main__':
     main()
