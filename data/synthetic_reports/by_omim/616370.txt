@@ -1,0 +1,28 @@
+The patient is a 6-month-old female presenting with profound hypotonia, developmental delay, and lactic acidosis. She was born after an unremarkable pregnancy but displayed feeding difficulties and failure to thrive in early infancy. Neurological examination reveals generalized weakness, poor head control, and minimal spontaneous movements. Laboratory evaluation shows elevated plasma lactate and alanine levels. Muscle biopsy indicates deficient activities of multiple respiratory chain complexes. Brain MRI demonstrates diffuse cerebral atrophy and delayed myelination. Supportive management focuses on nutritional support and seizure control.
+Trichothiodystrophy 2, photosensitive (OMIM:616390)
+
+The patient is a 3-year-old male with brittle hair, photosensitivity, and developmental delay. Parents report hair thinning and scalp scaling since infancy. On physical examination, hair microscopy reveals characteristic alternating light and dark bands (tiger-tail pattern), consistent with brittle hair disorder. Skin shows erythema and scaling on sun-exposed areas. Neurologic examination reveals mild hypotonia and delayed motor milestones. Additional findings include ichthyosis and nail dystrophy. Management involves sun protection, dermatologic care, and developmental support.
+Trichothiodystrophy 3, photosensitive (OMIM:616395)
+
+The patient is a 5-year-old female presenting with photosensitivity, brittle hair, and recurrent respiratory infections. Physical exam confirms brittle, short scalp hair and scaling erythematous skin predominantly over sun-exposed areas. Neurological assessment reveals mild intellectual disability and hypotonia. Hair shaft analysis shows a distinctive tiger-tail banding on polarized light microscopy. Photosensitivity rash requires strict sun avoidance measures. Supportive therapies include dermatological management and immunological evaluation for recurrent infections.
+Developmental and epileptic encephalopathy 50 (OMIM:616457)
+
+A 3-year-old male with autosomal recessive inheritance pattern presents with early infantile-onset, refractory epilepsy, and severe developmental delay. Seizures are variable, including tonic, myoclonic, and focal types. Neurological examination demonstrates hypotonia and lack of purposeful movements. EEG reveals multifocal epileptiform discharges with background slowing. MRI brain shows diffuse cortical atrophy and delayed myelination. Extensive metabolic and infectious evaluations are unremarkable. Pharmacologic seizure management is ongoing with limited success.
+Acrofacial dysostosis, Cincinnati type (OMIM:616462)
+
+The patient is a newborn male presenting with multiple craniofacial anomalies including micrognathia, cleft palate, and ear malformations. He also exhibits limb anomalies such as radial hypoplasia and absent thumbs. Prenatal history was significant for polyhydramnios and fetal growth restriction. Respiratory support was necessary due to airway compromise. Radiographs confirm skeletal dysplasia affecting the facial bones and upper limbs. Multidisciplinary care involves surgical correction, respiratory support, and feeding assistance.
+Intellectual developmental disorder, autosomal dominant 39 (OMIM:616521)
+
+The patient is a 7-year-old female presenting with developmental delay, speech impairment, and mild intellectual disability. Family history is negative for similar conditions. On examination, the patient shows subtle facial dysmorphisms, including hypertelorism and a broad nasal bridge. Neurological exam reveals hypotonia with no focal deficits. MRI brain is normal. Educational interventions and speech therapy are ongoing, aiming to support cognitive and language development.
+Smith-Kingsmore syndrome (OMIM:616638)
+
+The patient is a 2-year-old male with macrocephaly, developmental delay, and seizures starting in infancy. Physical examination reveals a prominent forehead, hypertelorism, and hypotonia. MRI brain shows megalencephaly with ventriculomegaly. EEG demonstrates generalized epileptiform discharges. The patient's seizures are partially responsive to antiepileptic drugs. Developmental interventions focus on motor and cognitive skills.
+Congenital disorder of glycosylation, type Iip (OMIM:616829)
+
+A 9-month-old female presents with failure to thrive, hypotonia, and developmental delay. Examination reveals inverted nipples and behavioral abnormalities. Laboratory studies show abnormal transferrin glycosylation patterns consistent with a glycosylation disorder. Brain MRI shows mild cerebral atrophy. Liver function tests indicate mild cholestasis. Nutritional support and symptom management are ongoing with multidisciplinary follow-up.
+Luscan-Lumish syndrome (OMIM:616831)
+
+The patient is a 5-year-old male presenting with intellectual disability, macrocephaly, and distinctive facial features including a broad forehead and prominent nasal bridge. Speech delay and hypotonia are noted on neurological examination. Brain MRI reveals mild ventriculomegaly with no structural malformations. Behavioral problems include attention deficit and hyperactivity. Support includes educational and behavioral therapies.
+Parkinson disease 23, autosomal recessive, early onset (OMIM:616840)
+
+A 28-year-old male presents with early-onset parkinsonian symptoms including resting tremor, rigidity, and bradykinesia. Symptoms began in his mid-20s with progressive motor deterioration. Neurological exam reveals masked facies, decreased arm swing, and postural instability. Brain MRI is normal with no atypical features. Response to levodopa is partial. Family history is negative for parkinsonian disorders. Supportive management includes pharmacotherapy and physiotherapy.

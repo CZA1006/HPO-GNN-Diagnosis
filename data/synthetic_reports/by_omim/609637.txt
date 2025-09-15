@@ -1,0 +1,28 @@
+The patient is a newborn female presenting with midline facial anomalies and severe neurological impairment. Prenatal ultrasounds suggested brain malformation, and delivery occurred at term. Clinical examination reveals cleft lip and palate, hypotelorism, and a flat nasal bridge. Neonatal neurological assessment shows poor spontaneous movements and feeding difficulties. Brain MRI demonstrates alobar holoprosencephaly with absence of separation of the cerebral hemispheres and single dilated ventricle. Other systemic anomalies are absent.
+Noonan syndrome 3 (OMIM:609942)
+
+The patient is a 7-year-old male with short stature, facial dysmorphism, and congenital heart defect. Birth history was unremarkable. Family history reveals a paternal uncle with mild similar features. Physical assessment shows ptosis, low-set ears, short neck, and sandal gap toes. Cardiac evaluation identifies hypertrophic cardiomyopathy. Growth parameters are below the 5th percentile. Developmental milestones are mildly delayed. Echocardiography confirms asymmetric septal hypertrophy.
+Cortical dysplasia, complex, with other brain malformations 7 (OMIM:610031)
+
+The patient is a 6-year-old female with a history of drug-resistant epilepsy and global developmental delay. Seizures began in infancy. Neurological exam reveals spasticity and hypotonia with delayed milestones. MRI shows extensive polymicrogyria and areas of cortical dysplasia involving multiple lobes, along with ventriculomegaly. EEG demonstrates multifocal epileptiform activity. Routine metabolic screening was negative.
+Pitt-Hopkins like syndrome 1 (OMIM:610042)
+
+The patient is a 3-year-old male with global developmental delay, characteristic facial features, and episodes of hyperventilation. No family history of neurodevelopmental disorders. Physical examination shows a broad nasal bridge, deep-set eyes, and a Cupid’s bow upper lip. Cognitive assessment reveals severe intellectual disability with absent speech. EEG is normal, and brain MRI is unremarkable. Routine metabolic and genetic testing are ongoing.
+Loeys-Dietz syndrome 2 (OMIM:610168)
+
+The patient is a 10-year-old female evaluated for arterial aneurysms and connective tissue abnormalities. Physical exam reveals bifid uvula, hypertelorism, and joint hypermobility. Echocardiogram shows aortic root dilation with mild valve regurgitation. There is a history of spontaneous arterial dissections in a maternal relative. Vascular imaging reveals tortuous arteries in the neck and abdomen. Laboratory studies are otherwise normal.
+Kleefstra syndrome 1 (OMIM:610253)
+
+The patient is a 5-year-old male referred for developmental delay, hypotonia, and distinctive facial features. Family history is noncontributory. Examination reveals brachycephaly, hypertelorism, flat midface, and thin upper lip. Behavioral abnormalities include autistic features and sleep disturbances. EEG is normal and brain MRI shows mild delayed myelination. Routine metabolic and genetic workup has been initiated.
+Nemaline myopathy 7, autosomal recessive (OMIM:610687)
+
+The patient is a 1-year-old female with marked hypotonia and muscle weakness present since birth. She exhibits delayed motor milestones and poor head control. Family history is negative. On clinical examination, generalized weakness with facial muscle involvement is noted. Serum creatine kinase is normal. Muscle biopsy reveals nemaline rods on electron microscopy. Respiratory function is stable but closely monitored.
+Cornelia de Lange syndrome 3 (OMIM:610759)
+
+The patient is a 4-year-old female presenting with distinctive facial dysmorphisms, growth retardation, and developmental delay. Birth history includes low birth weight and feeding difficulties. Facial features include synophrys, long eyelashes, and thin downturned lips. Limb abnormalities include micromelia and fifth finger clinodactyly. Behavioral assessment reveals self-injurious behaviors and attention deficits. Echocardiogram is normal.
+Osteogenesis imperfecta, type XI (OMIM:610968)
+
+The patient is a 6-year-old male with recurrent low-impact fractures and blue sclerae. Birth was uncomplicated. Family history is negative for bone disorders. On examination, there is short stature, bowing of long bones, and ligamentous laxity. Bone density scan reveals generalized osteopenia. Hearing evaluation is normal. Biochemical markers of bone turnover are elevated.
+Intellectual developmental disorder, autosomal recessive 5 (OMIM:611091)
+
+The patient is a 2-year-old male presenting with profound developmental delay and hypotonia. He was born at term to consanguineous parents. Physical examination shows microcephaly, hypotonia, and poor visual tracking. MRI brain shows simplified gyral pattern and mild ventriculomegaly. Metabolic workup is unrevealing. Genetic testing for metabolic and developmental disorders is ongoing.

@@ -1,0 +1,11 @@
+Evaluated 8115 cases
+Gold not present in candidates: 8115
+== HPO-space baseline ==
+Overall Top-5: 0.0000
+Overall Top-10: 0.0000
+Overall Top-50: 0.0000
+Overall Top-100: 0.0000
+Overall MRR: 0.0000
+Matched Top-K/MRR: N/A (no matched cases)
+[ROC] Not enough positives/negatives to compute ROC/AUC.
+[Done]

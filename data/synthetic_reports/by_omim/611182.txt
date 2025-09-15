@@ -1,0 +1,28 @@
+The patient is a 7-month-old female presenting with failure to thrive, hypotonia, and developmental delay. There is no significant family history. Physical examination reveals inverted nipples, abnormal fat distribution, and hepatomegaly. Laboratory investigations show abnormal serum transferrin glycosylation patterns. Brain MRI shows mild cerebral atrophy. Metabolic screening and liver function tests show abnormalities consistent with a glycosylation defect.
+Glaucoma 1, open angle, H (OMIM:611276)
+
+The patient is a 45-year-old male presenting with gradual, painless vision loss in both eyes. Family history is positive for glaucoma in the mother and maternal grandfather. Intraocular pressure measurements are elevated. Slit-lamp examination reveals open angles with optic nerve cupping and visual field defects consistent with glaucomatous damage. Central corneal thickness is within normal limits. Standard laboratory investigations are unremarkable.
+Legius syndrome (OMIM:611431)
+
+The patient is an 8-year-old male presenting with multiple café-au-lait spots and freckling in axillary and inguinal regions. There is a family history of similar skin findings in the father. Developmental milestones are normal, and nohearing or visual impairments are reported. Physical exam reveals no neurofibromas or Lisch nodules on ophthalmologic evaluation. No skeletal abnormalities are noted. MRI brain is normal, with no evidence of optic pathway gliomas.
+Distal renal tubular acidosis 4 with hemolytic anemia (OMIM:611590)
+
+The patient is a 3-year-old female presenting with failure to thrive, polyuria, and pallor. Family history is negative for renal or hematologic disorders. Laboratory analyses reveal metabolic acidosis with a normal anion gap, hypokalemia, and hemolytic anemia with elevated reticulocyte count and indirect bilirubin. Urinalysis shows alkaline urine. Renal ultrasound shows nephrocalcinosis. Genetic testing is in progress.
+Developmental and epileptic encephalopathy 4 (OMIM:612164)
+
+The patient is a 9-month-old male with refractory seizures and severe developmental delay. Seizures started in infancy and are frequent despite multiple antiepileptic medications. Examination reveals hypotonia and poor visual tracking. EEG shows multifocal epileptiform discharges with hypsarrhythmia. MRI brain reveals delayed myelination and generalized cerebral atrophy. Metabolic screening is normal. Genetic testing is being performed.
+Maturity-onset diabetes of the young, type IX (OMIM:612225)
+
+The patient is a 16-year-old female with a family history of diabetes affecting multiple generations. She presents with mild hyperglycemia detected on screening without ketosis. Physical examination is unremarkable, and BMI is within normal range. Laboratory investigations reveal elevated fasting blood glucose and impaired glucose tolerance. Autoimmune markers are negative. Genetic testing for MODY type IX mutations is pending.
+Glass syndrome (OMIM:612313)
+
+The patient is a 5-year-old male presenting with intellectual disability and distinctive craniofacial features including broad nasal bridge, low-set ears, and micrognathia. Developmental milestones are delayed with poor speech and motor coordination. Family history is negative. Brain MRI shows mild ventriculomegaly and delayed myelination. Routine metabolic workup is unremarkable. Genetic studies are ongoing.
+Pseudopseudohypoparathyroidism (OMIM:612463)
+
+The patient is a 12-year-old female presenting with short stature and round face. Family history is noncontributory. Physical examination reveals brachydactyly and subcutaneous ossifications. Laboratory tests show normal calcium, phosphate, and parathyroid hormone levels. Radiographs show shortened metacarpals suggestive of brachydactyly type E. Endocrinological evaluation is otherwise normal.
+Spherocytosis, type 4 (OMIM:612653)
+
+The patient is a 7-year-old female with a history of anemia, jaundice, and splenomegaly. Family history reveals similar symptoms in the father. Laboratory investigations show reticulocytosis, increased mean corpuscular hemoglobin concentration, and spherocytes on peripheral blood smear. Osmotic fragility test is positive. Direct antiglobulin test is negative. Abdominal ultrasound confirms splenomegaly.
+Spherocytosis, type 5 (OMIM:612690)
+
+The patient is a 5-year-old male presenting with chronic hemolytic anemia and intermittent jaundice. Birth history is unremarkable. Family history is negative. Physical examination reveals pallor and mild hepatosplenomegaly. Laboratory studies show increased reticulocytes, elevated lactate dehydrogenase, and spherocytes on blood smear. Coombs test is negative. Bone marrow biopsy shows erythroid hyperplasia.
