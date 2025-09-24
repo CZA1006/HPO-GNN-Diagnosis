@@ -1,0 +1,3 @@
+Encephalopathy, porphyria-related (OMIM:620704)
+
+A 22-year-old male presents with recurrent episodes of abdominal pain, neuropsychiatric symptoms, and peripheral neuropathy. Episodes are often precipitated by fasting and certain medications. Neurological exam during attacks shows weakness, sensory loss, and autonomic dysfunction. Laboratory studies reveal elevated levels of porphyrin precursors in urine and plasma during symptomatic periods. Electromyography is consistent with axonal neuropathy. Treatment includes avoidance of triggers, hemin infusions during attacks, and symptomatic management of neurologic deficits.

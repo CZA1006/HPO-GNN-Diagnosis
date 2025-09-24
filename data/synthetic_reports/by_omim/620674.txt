@@ -1,0 +1,3 @@
+Neutropenia, severe congenital, 11, autosomal dominant (OMIM:620674)
+
+The patient is a 2-year-old male presenting with recurrent bacterial infections and persistent neutropenia documented since infancy. Family history is positive for neutropenia in the father. Physical exam is notable for stomatitis and mild lymphadenopathy. Laboratory tests reveal an absolute neutrophil count persistently below 500/μL. Bone marrow aspiration shows maturation arrest at the promyelocyte stage. Treatment includes granulocyte colony-stimulating factor (G-CSF) with close infection surveillance. Prophylactic antibiotics are administered during neutropenic episodes.

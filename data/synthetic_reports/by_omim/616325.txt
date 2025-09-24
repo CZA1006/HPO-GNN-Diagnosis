@@ -1,0 +1,3 @@
+Myasthenic syndrome, congenital, 9, associated with acetylcholine receptor deficiency (OMIM:616325)
+
+The patient is a 3-year-old female with congenital onset of muscle weakness and fatigability. Symptoms include ptosis, facial weakness, and difficulty swallowing. Electrodiagnostic testing shows decremental responses consistent with impaired neuromuscular transmission. Muscle histology reveals decreased acetylcholine receptor density. Anticholinesterase medication and supportive respiratory therapy are part of ongoing care.

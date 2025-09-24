@@ -1,0 +1,3 @@
+Immunodeficiency 117, mycobacteriosis, autosomal recessive (OMIM:620668)
+
+A 6-year-old male presents with recurrent severe infections, predominantly mycobacterial and fungal in nature, beginning in infancy. There is no family history of immunodeficiency. Examination reveals failure to thrive, lymphadenopathy, and hepatosplenomegaly. Laboratory studies demonstrate profound defects in T-cell mediated immunity, including reduced numbers and impaired function of Th1 lymphocytes. Flow cytometry confirms a decrease in interferon-gamma signaling pathways. Chest imaging shows bronchiectasis and mediastinal lymphadenopathy. Treatment includes antimycobacterial therapy and immunomodulatory agents with close infectious disease monitoring.

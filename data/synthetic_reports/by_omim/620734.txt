@@ -1,0 +1,3 @@
+Cardiomyopathy, familial hypertrophic, 30, atrial (OMIM:620734)
+
+The patient is a 35-year-old male with a family history of sudden cardiac death presenting with exertional dyspnea and palpitations. Physical examination reveals a harsh systolic murmur best heard at the left lower sternal border. Echocardiography demonstrates asymmetric left ventricular hypertrophy predominantly affecting the atria and mild diastolic dysfunction. Electrocardiogram shows left atrial enlargement and nonspecific ST-T changes. Cardiac MRI confirms hypertrophic changes with patchy late gadolinium enhancement. Holter monitoring detects frequent atrial ectopy and paroxysmal atrial fibrillation. Management includes beta-blockers and anticoagulation, with consideration for implantable devices.

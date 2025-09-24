@@ -1,0 +1,3 @@
+MHC class I deficiency 2 (OMIM:620813)
+
+An 8-year-old female presents with recurrent respiratory and gastrointestinal infections from infancy. She exhibits failure to thrive and persistent lymphadenopathy. Laboratory workup demonstrates selective absence of HLA class I molecules on peripheral blood lymphocytes and reduced CD8+ T-cell counts. Immunoglobulin levels are normal. Flow cytometry excludes other lymphocyte subsets abnormalities. Chest CT shows bronchiectasis. The patient is managed with immunoglobulin replacement therapy, antibiotic prophylaxis, and respiratory physiotherapy.

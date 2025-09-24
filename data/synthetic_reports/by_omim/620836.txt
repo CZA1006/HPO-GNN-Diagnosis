@@ -1,0 +1,3 @@
+Immunodeficiency 120 (OMIM:620836)
+
+The patient is a 5-year-old male with a history of recurrent infections, chronic diarrhea, and failure to thrive. Exam shows lymphadenopathy and growth retardation. Laboratory workup reveals panhypogammaglobulinemia and defective T-cell proliferation responses. Flow cytometry demonstrates decreased expression of several activation markers on T and B lymphocytes. Viral infections have been documented repeatedly. Bone marrow analysis is nonspecific. Management includes immunoglobulin replacement and aggressive infection control.

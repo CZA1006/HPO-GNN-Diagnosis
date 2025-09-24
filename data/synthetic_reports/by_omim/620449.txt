@@ -1,0 +1,3 @@
+Immunodeficiency 112 (OMIM:620449)
+
+The patient is a 10-year-old female with a history of recurrent bacterial and viral infections since infancy. Clinical presentation includes frequent episodes of pneumonia, otitis media, and severe mucocutaneous candidiasis. Physical exam shows lymphadenopathy and mild growth retardation. Immunological studies reveal low serum immunoglobulin levels across all subclasses and impaired T-cell proliferation in response to mitogens. Flow cytometry demonstrates decreased memory B cells. Prophylactic antibiotic therapy and immunoglobulin replacement are initiated. Growth and developmental assessments are normal.

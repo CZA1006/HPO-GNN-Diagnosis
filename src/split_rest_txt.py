@@ -1,72 +1,98 @@
 #!/usr/bin/env python3
-"""
-Split data/synthetic_reports/by_omim/rest.txt into one file per OMIM id.
+# -*- coding: utf-8 -*-
 
-We treat any line that contains 'OMIM: <digits>' and is preceded by a blank
-line as a new header, e.g.:
-    'Joubert syndrome 10 (OMIM: 300804)'
-"""
-
-from __future__ import annotations
-import os
+import argparse
 import re
+from collections import Counter
 from pathlib import Path
 
-BASE = Path("data/synthetic_reports/by_omim")
-INP  = BASE / "rest.txt"
-OUTD = BASE
+# Match OMIM/MIM with flexible punctuation and exactly 6 digits (typical OMIM IDs)
+OMIM_RE = re.compile(
+    r"""(?ix)          # case-insensitive, verbose
+    \b(?:OMIM|MIM)     # keyword
+    [^0-9]{0,5}        # short non-digit separator(s) like ':', '#', ',', ')', ' '
+    (?P<id>[1-9]\d{5}) # 6-digit ID (leading digit non-zero)
+    \b
+    """
+)
 
-OMIM_IN_LINE = re.compile(r"OMIM\s*:?\s*(\d{4,7})", re.IGNORECASE)
+def read_text(path: Path, encoding: str = "utf-8") -> str:
+    with path.open("r", encoding=encoding, errors="replace") as f:
+        return f.read()
 
-def maybe_header(line: str, prev_blank: bool) -> str | None:
-    """Return OMIM id if this looks like a header line."""
-    if not prev_blank:
-        return None
-    m = OMIM_IN_LINE.search(line)
-    return m.group(1) if m else None
+def line_start(text: str, pos: int) -> int:
+    """Return index of the start-of-line containing pos."""
+    nl = text.rfind("\n", 0, pos)
+    return 0 if nl == -1 else nl + 1
 
-def write_block(outdir: Path, omim_id: str | None, buf: list[str]) -> int:
-    """Write buffer to <omim_id>.txt; return 1 if written, else 0."""
-    if not omim_id or not buf:
-        return 0
-    out = outdir / f"{omim_id}.txt"
-    # avoid overwrite if a per-OMIM file already exists
-    if out.exists():
-        i = 2
-        while (outdir / f"{omim_id}_{i}.txt").exists():
-            i += 1
-        out = outdir / f"{omim_id}_{i}.txt"
-    out.write_text(("\n".join(buf)).strip() + "\n", encoding="utf-8")
-    return 1
+def split_chunks(text: str):
+    """
+    Return list of (id, chunk_text) cut from the line containing each match
+    up to the line before the next match.
+    """
+    matches = list(OMIM_RE.finditer(text))
+    if not matches:
+        return []
 
-def main() -> None:
-    OUTD.mkdir(parents=True, exist_ok=True)
-    if not INP.exists():
-        print(f"rest.txt not found at {INP}")
+    starts = [line_start(text, m.start()) for m in matches]
+    ids = [m.group("id") for m in matches]
+
+    chunks = []
+    for i, (sid, sidx) in enumerate(zip(ids, starts)):
+        eidx = starts[i + 1] if i + 1 < len(starts) else len(text)
+        chunk = text[sidx:eidx].rstrip()
+        chunks.append((sid, chunk))
+    return chunks
+
+def write_chunks(chunks, outdir: Path, encoding: str, dry_run: bool):
+    outdir.mkdir(parents=True, exist_ok=True)
+    seen_this_run = set()
+    for omim_id, chunk in chunks:
+        out_path = outdir / f"{omim_id}.txt"
+        if not dry_run:
+            # If first time touching this file this run, start fresh (avoid mixing runs)
+            if omim_id not in seen_this_run and out_path.exists():
+                out_path.unlink()
+            with out_path.open("a", encoding=encoding) as f:
+                if out_path.exists() and out_path.stat().st_size > 0:
+                    f.write("\n\n" + "=" * 80 + "\n\n")
+                f.write(chunk.strip() + "\n")
+        seen_this_run.add(omim_id)
+
+def summarize(chunks, text: str, outdir: Path):
+    ids = [i for i, _ in chunks]
+    counts = Counter(ids)
+    total_tokens = len(ids)
+    unique_ids = len(counts)
+    multi = sum(1 for _, c in counts.items() if c > 1)
+    print("\n=== Split summary ===")
+    print(f"OMIM/MIM tokens found:   {total_tokens}")
+    print(f"Unique OMIM IDs:         {unique_ids}")
+    print(f"IDs with >1 chunk:       {multi}")
+    if outdir.exists():
+        existing = len(list(outdir.glob("[0-9][0-9][0-9][0-9][0-9][0-9].txt")))
+        print(f"Numeric files now in {outdir}: {existing}")
+
+def main():
+    p = argparse.ArgumentParser(description="Split rest.txt into per-OMIM files.")
+    p.add_argument("--infile", required=True, help="Path to rest.txt")
+    p.add_argument("--outdir", required=True, help="Directory to write per-OMIM files")
+    p.add_argument("--encoding", default="utf-8")
+    p.add_argument("--dry_run", action="store_true", help="Parse and report only; write nothing.")
+    args = p.parse_args()
+
+    infile = Path(args.infile)
+    outdir = Path(args.outdir)
+
+    text = read_text(infile, encoding=args.encoding)
+
+    chunks = split_chunks(text)
+    if not chunks:
+        print("No OMIM/MIM markers found. Check encoding or pattern.")
         return
 
-    text  = INP.read_text(encoding="utf-8", errors="ignore")
-    lines = text.splitlines()
-
-    current_id: str | None = None
-    buf: list[str] = []
-    wrote = 0
-    prev_blank = True  # treat BOF as blank
-
-    for line in lines:
-        omim = maybe_header(line, prev_blank)
-        if omim:
-            wrote += write_block(OUTD, current_id, buf)
-            current_id = omim
-            buf = []
-            prev_blank = False
-            continue
-
-        buf.append(line)
-        prev_blank = (line.strip() == "")
-
-    wrote += write_block(OUTD, current_id, buf)
-    print(f"Wrote {wrote} files from rest.txt")
+    write_chunks(chunks, outdir, args.encoding, args.dry_run)
+    summarize(chunks, text, outdir)
 
 if __name__ == "__main__":
     main()

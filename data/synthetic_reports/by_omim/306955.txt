@@ -1,3 +1,4 @@
+Heterotaxy, visceral, 1, X-linked (OMIM: 306955)
 A newborn male is admitted to the neonatal intensive care unit for cyanosis and respiratory distress. Prenatal ultrasound noted dextrocardia and possible situs ambiguous.
 
 On examination, the infant has mild facial dysmorphism. Cardiac auscultation reveals murmurs suggestive of complex congenital heart disease. Imaging studies confirm heterotaxy with asplenia, interrupted inferior vena cava, and malposition of abdominal organs. Echocardiography reveals atrioventricular septal defect and pulmonary stenosis. Laboratory tests show normal immune function.

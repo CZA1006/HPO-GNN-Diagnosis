@@ -1,0 +1,3 @@
+Ventricular tachycardia, catecholaminergic polymorphic, 3 (OMIM:614021)
+
+The patient is a 15-year-old female presenting with exercise-induced palpitations, syncope, and documented ventricular arrhythmias. Family history is positive for sudden cardiac death in her mother at age 30. Clinical examination is unremarkable with normal resting ECG and echocardiography. Exercise stress testing provokes bidirectional polymorphic ventricular tachycardia. Holter monitoring shows frequent ventricular ectopy during adrenergic stimulation. Treatment with beta-blockers is initiated, and implantable cardioverter-defibrillator consideration is underway.

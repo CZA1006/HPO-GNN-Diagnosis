@@ -1,0 +1,3 @@
+Myasthenic syndrome, congenital, 8, with pre- and postsynaptic defects (OMIM:615120)
+
+The patient is a 3-year-old female presenting with neonatal hypotonia, feeding difficulties, and fatigable muscle weakness. Family history is unremarkable. On clinical examination, ptosis, facial weakness, and generalized muscle weakness are evident with diurnal fluctuation. Electromyography shows a decremental response on repetitive nerve stimulation. Serum acetylcholine receptor antibodies are negative. Muscle biopsy reveals abnormalities consistent with neuromuscular junction dysfunction. Supportive care includes pharmacologic agents to enhance neuromuscular transmission and respiratory support as needed.

@@ -1,0 +1,3 @@
+HMG-CoA synthase-2 deficiency (OMIM:605911)
+
+The patient is an 8-month-old male presenting with recurrent episodes of hypoglycemia and lethargy, often triggered by fasting or intercurrent illness. There is a history of poor feeding and vomiting during these episodes. Family history is unremarkable. On admission during an acute episode, the patient was hypoglycemic with mild metabolic acidosis. Biochemical testing showed elevated levels of 3-hydroxy-3-methylglutaric acid and low ketone bodies. Liver function tests were mildly elevated. Acylcarnitine profile demonstrated abnormalities suggestive of impaired ketogenesis. Genetic and enzymatic assays to confirm deficiency of mitochondrial HMG-CoA synthase are pending.

@@ -1,0 +1,3 @@
+Immunodeficiency, common variable, 13 (OMIM:616873)
+
+The patient is a 14-year-old male with a history of recurrent respiratory and gastrointestinal infections. There is no family history of immunodeficiency. Physical examination reveals lymphadenopathy and mild hepatosplenomegaly. Laboratory data show hypogammaglobulinemia affecting all immunoglobulin classes. Vaccine response tests indicate poor antibody production. Flow cytometry identifies normal B and T cell counts with impaired function. Immunoglobulin replacement therapy has been started, and prophylactic antibiotics are under consideration.

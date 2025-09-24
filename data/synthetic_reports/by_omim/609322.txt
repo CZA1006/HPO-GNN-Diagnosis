@@ -1,0 +1,3 @@
+Rhabdoid tumor predisposition syndrome 1 (OMIM:609322)
+
+The patient is a 1-year-old male presenting with a rapidly enlarging abdominal mass and neurological symptoms including lethargy and vomiting. Imaging studies identify a renal mass and a brain lesion suspicious for an atypical teratoid/rhabdoid tumor. Family history includes a sibling who died from a similar tumor. Biopsy of the mass confirms rhabdoid tumor histology. Immunohistochemistry shows loss of INI1/SMARCB1 expression. Genetic testing for germline mutations in the SMARCB1 gene is underway.

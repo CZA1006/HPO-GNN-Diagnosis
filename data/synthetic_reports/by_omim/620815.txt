@@ -1,0 +1,3 @@
+MHC class II deficiency 2 (OMIM:620815)
+
+The patient is a 1-year-old male with a history of recurrent, severe bacterial and opportunistic infections, failure to thrive, and chronic diarrhea. Physical examination reveals oral thrush, lymphadenopathy, and hepatosplenomegaly. Laboratory tests show low CD4+ T-cell counts with absent or markedly reduced HLA-DR expression on antigen-presenting cells. Serum immunoglobulin concentrations are decreased, especially IgG and IgA. Immunologic evaluation confirms impaired adaptive immunity. Bone marrow biopsy excludes malignancy. Management includes aggressive antimicrobial therapy, immunoglobulin replacement, and evaluation for hematopoietic stem cell transplantation.

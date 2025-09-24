@@ -1,0 +1,3 @@
+Branched-chain keto acid dehydrogenase kinase deficiency (OMIM:614923)
+
+The patient is a 6-month-old male presenting with recurrent episodes of lethargy, poor feeding, and metabolic acidosis, typically triggered by intercurrent illness. There is no family history of metabolic disorders. On examination, the infant has hypotonia and mild hepatomegaly. Laboratory studies reveal elevated plasma branched-chain amino acids and organic acids. Urine organic acid analysis confirms the presence of ketoacids associated with branched-chain amino acid metabolism. Enzymatic assays show decreased activity of branched-chain keto acid dehydrogenase kinase. Nutritional support and avoidance of catabolic stress are ongoing aspects of clinical management.

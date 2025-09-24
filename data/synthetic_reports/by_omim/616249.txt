@@ -1,0 +1,3 @@
+Long QT syndrome 15 (OMIM:616249)
+
+The patient is an 18-year-old female referred for recurrent unexplained syncope. Family history includes sudden death in a maternal aunt. Physical examination is normal. ECG shows prolonged corrected QT interval with abnormal ventricular repolarization patterns. Holter monitoring detects episodes of torsades de pointes triggered by adrenergic stimulation. Echocardiography reveals no structural cardiac abnormalities. Treatment involves beta-adrenergic blockade and lifestyle modifications to prevent triggers.

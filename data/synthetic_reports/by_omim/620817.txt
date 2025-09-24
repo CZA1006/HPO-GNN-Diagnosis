@@ -1,0 +1,3 @@
+MHC class II deficiency 4 (OMIM:620817)
+
+The patient is a 14-month-old male with persistent diarrhea, oral thrush, and frequent respiratory tract infections. He has a family history of infant deaths due to infections. Physical exam reveals failure to thrive and generalized lymphadenopathy. Laboratory analysis demonstrates profound CD4+ T-cell deficiency and absent HLA-DR expression on antigen-presenting cells. Hypogammaglobulinemia is evident, with impaired antibody responses to vaccines. Imaging studies show bronchiectasis and chronic lung changes. Management includes lifelong antibiotic prophylaxis, immunoglobulin therapy, and evaluation for hematopoietic stem cell transplantation.

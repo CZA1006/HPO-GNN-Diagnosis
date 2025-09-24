@@ -1,0 +1,3 @@
+Alzheimer disease-4 (OMIM:606889)
+
+The patient is a 57-year-old male with progressive memory impairment and executive dysfunction over the last two years. There is a positive family history for early-onset dementia in his mother. Neurological examination reveals impaired short-term memory, difficulty with planning and decision-making, and mild apraxia. MMSE score is 22/30. Brain MRI demonstrates prominent hippocampal atrophy with mild cortical thinning in temporoparietal regions. Routine blood tests and thyroid function are within normal limits. Cerebrospinal fluid analysis shows decreased beta-amyloid and elevated tau protein.

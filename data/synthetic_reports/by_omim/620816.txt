@@ -1,0 +1,3 @@
+MHC class II deficiency 3 (OMIM:620816)
+
+This 8-month-old female presents with recurrent respiratory infections, failure to thrive, and persistent candidiasis despite antifungal treatment. Developmental delay is noted. Immunophenotyping reveals nearly absent HLA-DR expression on monocytes and B cells, with profound CD4+ T-cell lymphopenia. Serum immunoglobulin levels are low. Flow cytometry confirms MHC class II deficiency. Laboratory investigations exclude other causes of immunodeficiency. The patient is maintained on prophylactic antimicrobials and immunoglobulin replacement, with consideration of early stem cell transplantation.

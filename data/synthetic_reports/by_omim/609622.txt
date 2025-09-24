@@ -1,0 +1,3 @@
+Short QT syndrome 3 (OMIM:609622)
+
+The patient is a 21-year-old male with a history of palpitations, syncope, and a family history of sudden cardiac death. ECG reveals persistently shortened QT intervals with peaked T waves. Exercise testing does not normalize QT intervals, and Holter monitoring captures episodes of ventricular arrhythmias. Echocardiography is normal with structurally normal heart. Laboratory tests including serum electrolytes are normal. Risk stratification and discussion of implantable cardioverter-defibrillator therapy are ongoing.

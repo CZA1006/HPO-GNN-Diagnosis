@@ -1,0 +1,3 @@
+Encephalopathy, neonatal severe, with lactic acidosis and brain abnormalities (OMIM:617668)
+
+The patient is a neonate presenting with severe encephalopathy, respiratory distress, and lactic acidosis within the first week of life. Examination shows hypotonia, weak reflexes, and poor feeding. Blood tests reveal persistent metabolic acidosis with elevated serum lactate. Brain MRI reveals diffuse white matter abnormalities, cerebral atrophy, and basal ganglia involvement. Muscle biopsy indicates combined mitochondrial respiratory chain deficiency. Supportive care involves metabolic stabilization, nutritional support, and symptomatic management. Prognosis is guarded due to progressive neurodegeneration.
